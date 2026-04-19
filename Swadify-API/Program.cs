@@ -158,17 +158,16 @@ var app = builder.Build();
 // ─── Middleware Pipeline ──────────────────────────────────────────────────────
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
+//if (app.Environment.IsDevelopment())
+//    app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Food Delivery API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swadify - Food Delivery API v1");
         c.RoutePrefix = string.Empty; // Swagger at root
         c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         c.DefaultModelsExpandDepth(-1);
     });
-}
+//}
 
 app.UseSerilogRequestLogging(options =>
 {
