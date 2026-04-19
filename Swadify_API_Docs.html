@@ -1,0 +1,3644 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Food Delivery API — Technical Documentation | Jnaya LLC</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--deep-space: #0a1628;
+				--deep-space-2: #0f172a;
+				--royal: #1e3a8a;
+				--electric: #2563eb;
+				--cyan: #0891b2;
+				--teal: #0d9488;
+				--sky: #22d3ee;
+				--n900: #0f172a;
+				--n800: #1e293b;
+				--n700: #334155;
+				--n600: #475569;
+				--n400: #94a3b8;
+				--n300: #cbd5e1;
+				--n100: #f1f5f9;
+				--success: #059669;
+				--warning: #d97706;
+				--error: #dc2626;
+				--info: #2563eb;
+				--grad-primary: linear-gradient(
+					135deg,
+					#0a1628 0%,
+					#1e3a8a 100%
+				);
+				--grad-cta: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+				--grad-accent: linear-gradient(
+					135deg,
+					#1e3a8a 0%,
+					#0d9488 100%
+				);
+				--grad-hero: linear-gradient(
+					135deg,
+					#0a1628 0%,
+					#1e3a8a 40%,
+					#2563eb 70%,
+					#0891b2 100%
+				);
+				--ff-head: "Space Grotesk", sans-serif;
+				--ff-body: "Inter", sans-serif;
+				--ff-mono: "JetBrains Mono", monospace;
+				--radius: 12px;
+				--radius-sm: 6px;
+				--shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+				--shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.4);
+			}
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			html {
+				scroll-behavior: smooth;
+				font-size: 14px;
+			}
+
+			body {
+				font-family: var(--ff-body);
+				background: var(--deep-space-2);
+				color: var(--n300);
+				line-height: 1.6;
+				overflow-x: hidden;
+			}
+
+			/* ── SCROLLBAR ── */
+			::-webkit-scrollbar {
+				width: 6px;
+			}
+			::-webkit-scrollbar-track {
+				background: var(--n900);
+			}
+			::-webkit-scrollbar-thumb {
+				background: var(--n700);
+				border-radius: 3px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: var(--electric);
+			}
+
+			/* ── SIDEBAR NAV ── */
+			.sidebar {
+				position: fixed;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				width: 260px;
+				background: var(--deep-space);
+				border-right: 1px solid rgba(255, 255, 255, 0.06);
+				overflow-y: auto;
+				z-index: 100;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.sidebar-logo {
+				padding: 28px 24px 20px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.logo-icon {
+				width: 36px;
+				height: 36px;
+				background: var(--grad-cta);
+				border-radius: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-family: var(--ff-head);
+				font-weight: 700;
+				font-size: 18px;
+				color: #fff;
+				flex-shrink: 0;
+				position: relative;
+			}
+
+			.logo-icon::after {
+				content: "•";
+				position: absolute;
+				top: 4px;
+				right: 6px;
+				font-size: 8px;
+				color: var(--sky);
+				line-height: 1;
+			}
+
+			.logo-text {
+				display: flex;
+				flex-direction: column;
+			}
+			.logo-name {
+				font-family: var(--ff-head);
+				font-weight: 700;
+				font-size: 18px;
+				color: #fff;
+				letter-spacing: -0.3px;
+			}
+			.logo-name span {
+				color: var(--sky);
+			}
+			.logo-sub {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				margin-top: 1px;
+			}
+
+			.sidebar-version {
+				margin: 0 16px 4px;
+				padding: 8px 12px;
+				background: rgba(37, 99, 235, 0.1);
+				border: 1px solid rgba(37, 99, 235, 0.2);
+				border-radius: var(--radius-sm);
+				font-family: var(--ff-mono);
+				font-size: 10px;
+				color: var(--electric);
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				margin-top: 16px;
+			}
+
+			.nav-section {
+				padding: 16px 0 4px;
+			}
+
+			.nav-section-title {
+				padding: 0 20px 6px;
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+			}
+
+			.nav-link {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 7px 20px;
+				color: var(--n400);
+				text-decoration: none;
+				font-size: 13px;
+				font-weight: 400;
+				border-left: 2px solid transparent;
+				transition: all 0.15s ease;
+			}
+
+			.nav-link:hover {
+				color: #fff;
+				background: rgba(255, 255, 255, 0.04);
+				border-left-color: var(--electric);
+			}
+
+			.nav-link.active {
+				color: var(--sky);
+				border-left-color: var(--sky);
+				background: rgba(34, 211, 238, 0.06);
+			}
+
+			.nav-link .method-badge {
+				font-family: var(--ff-mono);
+				font-size: 8px;
+				padding: 1px 5px;
+				border-radius: 3px;
+				font-weight: 600;
+				letter-spacing: 0.5px;
+				flex-shrink: 0;
+			}
+
+			.badge-get {
+				background: rgba(5, 150, 105, 0.2);
+				color: #34d399;
+			}
+			.badge-post {
+				background: rgba(37, 99, 235, 0.2);
+				color: #60a5fa;
+			}
+			.badge-put {
+				background: rgba(217, 119, 6, 0.2);
+				color: #fbbf24;
+			}
+			.badge-patch {
+				background: rgba(124, 58, 237, 0.2);
+				color: #a78bfa;
+			}
+			.badge-delete {
+				background: rgba(220, 38, 38, 0.2);
+				color: #f87171;
+			}
+
+			.sidebar-footer {
+				margin-top: auto;
+				padding: 16px;
+				border-top: 1px solid rgba(255, 255, 255, 0.06);
+				font-size: 11px;
+				color: var(--n600);
+				text-align: center;
+			}
+
+			/* ── MAIN CONTENT ── */
+			.main {
+				margin-left: 260px;
+				min-height: 100vh;
+			}
+
+			/* ── COVER ── */
+			.cover {
+				background: var(--grad-hero);
+				position: relative;
+				overflow: hidden;
+				padding: 80px 64px 72px;
+				min-height: 340px;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+			}
+
+			.cover-grid {
+				position: absolute;
+				inset: 0;
+				background-image:
+					linear-gradient(
+						rgba(255, 255, 255, 0.03) 1px,
+						transparent 1px
+					),
+					linear-gradient(
+						90deg,
+						rgba(255, 255, 255, 0.03) 1px,
+						transparent 1px
+					);
+				background-size: 40px 40px;
+			}
+
+			.cover-glow {
+				position: absolute;
+				width: 500px;
+				height: 500px;
+				background: radial-gradient(
+					circle,
+					rgba(34, 211, 238, 0.12) 0%,
+					transparent 70%
+				);
+				top: -100px;
+				right: -100px;
+				pointer-events: none;
+			}
+
+			.cover-eyebrow {
+				font-family: var(--ff-mono);
+				font-size: 10px;
+				color: var(--sky);
+				letter-spacing: 3px;
+				text-transform: uppercase;
+				margin-bottom: 16px;
+				position: relative;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.cover-eyebrow::before {
+				content: "";
+				width: 24px;
+				height: 1px;
+				background: var(--sky);
+			}
+
+			.cover h1 {
+				font-family: var(--ff-head);
+				font-weight: 700;
+				font-size: 44px;
+				line-height: 1.1;
+				letter-spacing: -1.5px;
+				color: #fff;
+				position: relative;
+				margin-bottom: 12px;
+			}
+
+			.cover h1 span {
+				color: var(--sky);
+			}
+
+			.cover-sub {
+				font-size: 16px;
+				color: rgba(255, 255, 255, 0.65);
+				max-width: 520px;
+				line-height: 1.6;
+				position: relative;
+				margin-bottom: 36px;
+			}
+
+			.cover-meta {
+				display: flex;
+				gap: 32px;
+				position: relative;
+			}
+
+			.cover-meta-item {
+				display: flex;
+				flex-direction: column;
+				gap: 3px;
+			}
+
+			.cover-meta-label {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: rgba(255, 255, 255, 0.4);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+			}
+
+			.cover-meta-value {
+				font-family: var(--ff-mono);
+				font-size: 13px;
+				color: rgba(255, 255, 255, 0.9);
+			}
+
+			.cover-meta-value.highlight {
+				color: var(--sky);
+			}
+
+			/* ── CONTENT BODY ── */
+			.content {
+				padding: 0 64px 80px;
+				max-width: 1000px;
+			}
+
+			/* ── SECTIONS ── */
+			.section {
+				padding-top: 56px;
+			}
+
+			.section-eyebrow {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--electric);
+				letter-spacing: 3px;
+				text-transform: uppercase;
+				margin-bottom: 10px;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.section-eyebrow::after {
+				content: "";
+				flex: 1;
+				height: 1px;
+				background: rgba(37, 99, 235, 0.2);
+			}
+
+			h2.section-title {
+				font-family: var(--ff-head);
+				font-weight: 700;
+				font-size: 28px;
+				line-height: 1.2;
+				letter-spacing: -0.5px;
+				color: #fff;
+				margin-bottom: 8px;
+			}
+
+			h3.sub-title {
+				font-family: var(--ff-head);
+				font-weight: 600;
+				font-size: 18px;
+				color: #fff;
+				margin: 32px 0 12px;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			h3.sub-title::before {
+				content: "";
+				width: 3px;
+				height: 18px;
+				background: var(--grad-cta);
+				border-radius: 2px;
+			}
+
+			.lead {
+				font-size: 15px;
+				color: var(--n400);
+				line-height: 1.7;
+				margin-bottom: 24px;
+			}
+
+			p {
+				font-size: 14px;
+				color: var(--n400);
+				line-height: 1.7;
+				margin-bottom: 12px;
+			}
+
+			/* ── INFO CARDS ── */
+			.info-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 16px;
+				margin: 24px 0;
+			}
+
+			.info-card {
+				background: var(--n900);
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: var(--radius);
+				padding: 20px;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.info-card::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 2px;
+				background: var(--grad-cta);
+			}
+
+			.info-card-label {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.info-card-value {
+				font-family: var(--ff-mono);
+				font-size: 13px;
+				color: var(--sky);
+				font-weight: 500;
+			}
+
+			.info-card-desc {
+				font-size: 11px;
+				color: var(--n600);
+				margin-top: 4px;
+			}
+
+			/* ── ROLE BADGES ── */
+			.role-grid {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 12px;
+				margin: 20px 0;
+			}
+
+			.role-card {
+				background: var(--n900);
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: var(--radius);
+				padding: 16px;
+				text-align: center;
+			}
+
+			.role-icon {
+				width: 40px;
+				height: 40px;
+				border-radius: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 0 auto 10px;
+				font-size: 18px;
+			}
+
+			.role-name {
+				font-family: var(--ff-head);
+				font-weight: 600;
+				font-size: 13px;
+				color: #fff;
+				margin-bottom: 4px;
+			}
+
+			.role-desc {
+				font-size: 11px;
+				color: var(--n600);
+				line-height: 1.4;
+			}
+
+			/* ── ENDPOINT BLOCKS ── */
+			.endpoint-block {
+				background: var(--n900);
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: var(--radius);
+				margin-bottom: 24px;
+				overflow: hidden;
+			}
+
+			.endpoint-header {
+				padding: 16px 20px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				flex-wrap: wrap;
+			}
+
+			.method-tag {
+				font-family: var(--ff-mono);
+				font-size: 11px;
+				font-weight: 700;
+				padding: 4px 10px;
+				border-radius: 6px;
+				letter-spacing: 0.5px;
+				flex-shrink: 0;
+			}
+
+			.method-get {
+				background: rgba(5, 150, 105, 0.15);
+				color: #34d399;
+				border: 1px solid rgba(5, 150, 105, 0.3);
+			}
+			.method-post {
+				background: rgba(37, 99, 235, 0.15);
+				color: #60a5fa;
+				border: 1px solid rgba(37, 99, 235, 0.3);
+			}
+			.method-put {
+				background: rgba(217, 119, 6, 0.15);
+				color: #fbbf24;
+				border: 1px solid rgba(217, 119, 6, 0.3);
+			}
+			.method-patch {
+				background: rgba(124, 58, 237, 0.15);
+				color: #a78bfa;
+				border: 1px solid rgba(124, 58, 237, 0.3);
+			}
+			.method-delete {
+				background: rgba(220, 38, 38, 0.15);
+				color: #f87171;
+				border: 1px solid rgba(220, 38, 38, 0.3);
+			}
+
+			.endpoint-path {
+				font-family: var(--ff-mono);
+				font-size: 14px;
+				color: #fff;
+				font-weight: 500;
+				flex: 1;
+			}
+
+			.endpoint-desc {
+				font-size: 13px;
+				color: var(--n600);
+			}
+
+			.auth-badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 5px;
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				padding: 3px 8px;
+				border-radius: 4px;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				flex-shrink: 0;
+			}
+
+			.auth-none {
+				background: rgba(255, 255, 255, 0.05);
+				color: var(--n600);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+			}
+			.auth-required {
+				background: rgba(217, 119, 6, 0.1);
+				color: #fbbf24;
+				border: 1px solid rgba(217, 119, 6, 0.2);
+			}
+
+			.endpoint-body {
+				padding: 0;
+			}
+
+			.endpoint-tabs {
+				display: flex;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+				padding: 0 20px;
+			}
+
+			.endpoint-tab {
+				font-family: var(--ff-mono);
+				font-size: 10px;
+				color: var(--n600);
+				padding: 10px 14px;
+				cursor: pointer;
+				border-bottom: 2px solid transparent;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				transition: all 0.15s;
+				user-select: none;
+			}
+
+			.endpoint-tab.active {
+				color: var(--sky);
+				border-bottom-color: var(--sky);
+			}
+
+			.endpoint-tab:hover:not(.active) {
+				color: var(--n300);
+			}
+
+			.tab-content {
+				padding: 20px;
+			}
+
+			.tab-pane {
+				display: none;
+			}
+			.tab-pane.active {
+				display: block;
+			}
+
+			/* ── CODE BLOCKS ── */
+			.code-block {
+				background: #060e1a;
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				border-radius: var(--radius-sm);
+				overflow: hidden;
+			}
+
+			.code-header {
+				background: rgba(255, 255, 255, 0.03);
+				padding: 8px 14px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+			}
+
+			.code-lang {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+			}
+
+			.code-dots {
+				display: flex;
+				gap: 5px;
+			}
+			.code-dot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+			}
+			.dot-r {
+				background: #ff5f56;
+			}
+			.dot-y {
+				background: #ffbd2e;
+			}
+			.dot-g {
+				background: #27c93f;
+			}
+
+			pre {
+				padding: 16px 18px;
+				overflow-x: auto;
+				line-height: 1.6;
+			}
+
+			code,
+			pre {
+				font-family: var(--ff-mono);
+				font-size: 12.5px;
+			}
+
+			.json-key {
+				color: #93c5fd;
+			}
+			.json-string {
+				color: #86efac;
+			}
+			.json-number {
+				color: #fca5a5;
+			}
+			.json-bool {
+				color: #fbbf24;
+			}
+			.json-null {
+				color: var(--n600);
+			}
+			.json-comment {
+				color: var(--n700);
+				font-style: italic;
+			}
+
+			/* ── PARAMS TABLE ── */
+			.params-table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 12.5px;
+			}
+
+			.params-table th {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				padding: 8px 12px;
+				text-align: left;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+				background: rgba(255, 255, 255, 0.02);
+			}
+
+			.params-table td {
+				padding: 9px 12px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+				vertical-align: top;
+			}
+
+			.params-table tr:last-child td {
+				border-bottom: none;
+			}
+			.params-table tr:hover td {
+				background: rgba(255, 255, 255, 0.02);
+			}
+
+			.param-name {
+				font-family: var(--ff-mono);
+				color: #93c5fd;
+				font-size: 12px;
+			}
+
+			.param-type {
+				font-family: var(--ff-mono);
+				font-size: 11px;
+				color: var(--n600);
+			}
+
+			.param-required {
+				display: inline-flex;
+				align-items: center;
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				padding: 2px 6px;
+				border-radius: 3px;
+			}
+
+			.req-yes {
+				background: rgba(220, 38, 38, 0.12);
+				color: #f87171;
+				border: 1px solid rgba(220, 38, 38, 0.2);
+			}
+			.req-no {
+				background: rgba(255, 255, 255, 0.04);
+				color: var(--n600);
+				border: 1px solid rgba(255, 255, 255, 0.07);
+			}
+
+			.param-desc {
+				color: var(--n400);
+				line-height: 1.5;
+			}
+
+			/* ── STATUS CODES ── */
+			.status-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 8px;
+				margin-top: 12px;
+			}
+
+			.status-item {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 8px 12px;
+				background: rgba(255, 255, 255, 0.02);
+				border: 1px solid rgba(255, 255, 255, 0.05);
+				border-radius: var(--radius-sm);
+			}
+
+			.status-code {
+				font-family: var(--ff-mono);
+				font-size: 12px;
+				font-weight: 600;
+				width: 32px;
+				flex-shrink: 0;
+			}
+
+			.s200 {
+				color: #34d399;
+			}
+			.s201 {
+				color: #34d399;
+			}
+			.s400 {
+				color: #f87171;
+			}
+			.s401 {
+				color: #fbbf24;
+			}
+			.s403 {
+				color: #fbbf24;
+			}
+			.s404 {
+				color: #f87171;
+			}
+			.s500 {
+				color: var(--n600);
+			}
+
+			.status-text {
+				font-size: 12px;
+				color: var(--n400);
+			}
+
+			/* ── CALLOUT ── */
+			.callout {
+				display: flex;
+				gap: 12px;
+				padding: 14px 16px;
+				border-radius: var(--radius-sm);
+				margin: 16px 0;
+				font-size: 13px;
+				line-height: 1.5;
+				border-left-width: 3px;
+				border-left-style: solid;
+			}
+
+			.callout-info {
+				background: rgba(37, 99, 235, 0.08);
+				border-color: var(--electric);
+				color: #93c5fd;
+			}
+
+			.callout-warning {
+				background: rgba(217, 119, 6, 0.08);
+				border-color: var(--warning);
+				color: #fbbf24;
+			}
+
+			.callout-success {
+				background: rgba(5, 150, 105, 0.08);
+				border-color: var(--success);
+				color: #34d399;
+			}
+
+			.callout-icon {
+				flex-shrink: 0;
+				font-size: 15px;
+				margin-top: 1px;
+			}
+
+			/* ── DIVIDER ── */
+			.divider {
+				height: 1px;
+				background: rgba(255, 255, 255, 0.06);
+				margin: 48px 0;
+			}
+
+			/* ── BADGE INLINE ── */
+			.inline-badge {
+				display: inline-flex;
+				align-items: center;
+				font-family: var(--ff-mono);
+				font-size: 10px;
+				padding: 2px 7px;
+				border-radius: 4px;
+				vertical-align: middle;
+			}
+
+			/* ── SWAGGER SECTION ── */
+			.swagger-card {
+				background: var(--n900);
+				border: 1px solid rgba(37, 99, 235, 0.25);
+				border-radius: var(--radius);
+				overflow: hidden;
+				margin: 24px 0;
+			}
+
+			.swagger-top {
+				background: linear-gradient(
+					135deg,
+					rgba(37, 99, 235, 0.12) 0%,
+					rgba(8, 145, 178, 0.08) 100%
+				);
+				border-bottom: 1px solid rgba(37, 99, 235, 0.2);
+				padding: 24px;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+			}
+
+			.swagger-logo {
+				width: 48px;
+				height: 48px;
+				background: var(--grad-cta);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 22px;
+				font-family: var(--ff-mono);
+				font-weight: 700;
+				color: #fff;
+				flex-shrink: 0;
+			}
+
+			.swagger-title {
+				font-family: var(--ff-head);
+				font-weight: 700;
+				font-size: 18px;
+				color: #fff;
+				margin-bottom: 3px;
+			}
+
+			.swagger-url {
+				font-family: var(--ff-mono);
+				font-size: 13px;
+				color: var(--sky);
+			}
+
+			.swagger-steps {
+				padding: 24px;
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 16px;
+			}
+
+			.swagger-step {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+
+			.step-num {
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				background: var(--grad-cta);
+				color: #fff;
+				font-family: var(--ff-mono);
+				font-weight: 700;
+				font-size: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.step-title {
+				font-family: var(--ff-head);
+				font-size: 12px;
+				font-weight: 600;
+				color: #fff;
+			}
+
+			.step-desc {
+				font-size: 11px;
+				color: var(--n600);
+				line-height: 1.4;
+			}
+
+			/* ── ERROR TABLE ── */
+			.error-table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 13px;
+				margin: 16px 0;
+			}
+
+			.error-table th {
+				font-family: var(--ff-mono);
+				font-size: 9px;
+				color: var(--n600);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				padding: 8px 12px;
+				text-align: left;
+				background: rgba(255, 255, 255, 0.02);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+			}
+
+			.error-table td {
+				padding: 10px 12px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+				vertical-align: top;
+			}
+
+			.error-table tr:last-child td {
+				border-bottom: none;
+			}
+
+			/* ── SIGNALR SECTION ── */
+			.hub-card {
+				background: var(--n900);
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: var(--radius);
+				padding: 20px;
+				margin-bottom: 16px;
+			}
+
+			.hub-name {
+				font-family: var(--ff-head);
+				font-weight: 600;
+				font-size: 15px;
+				color: #fff;
+				margin-bottom: 4px;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.hub-url {
+				font-family: var(--ff-mono);
+				font-size: 12px;
+				color: var(--sky);
+				margin-bottom: 12px;
+			}
+
+			.event-list {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+
+			.event-item {
+				display: flex;
+				align-items: flex-start;
+				gap: 10px;
+				padding: 8px 10px;
+				background: rgba(255, 255, 255, 0.02);
+				border-radius: var(--radius-sm);
+				border: 1px solid rgba(255, 255, 255, 0.04);
+			}
+
+			.event-name {
+				font-family: var(--ff-mono);
+				font-size: 11px;
+				color: #93c5fd;
+				flex-shrink: 0;
+				min-width: 180px;
+			}
+
+			.event-desc {
+				font-size: 12px;
+				color: var(--n400);
+			}
+
+			/* ── BASE URL BANNER ── */
+			.baseurl-banner {
+				background: rgba(8, 145, 178, 0.07);
+				border: 1px solid rgba(8, 145, 178, 0.2);
+				border-radius: var(--radius);
+				padding: 14px 20px;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				margin: 20px 0;
+			}
+
+			.baseurl-label {
+				font-family: var(--ff-mono);
+				font-size: 10px;
+				color: var(--cyan);
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				flex-shrink: 0;
+			}
+
+			.baseurl-value {
+				font-family: var(--ff-mono);
+				font-size: 14px;
+				color: #fff;
+			}
+
+			/* ── PRINT ── */
+			@media print {
+				.sidebar {
+					display: none;
+				}
+				.main {
+					margin-left: 0;
+				}
+				.cover {
+					padding: 40px;
+				}
+			}
+
+			/* ── SMOOTH SECTION TRANSITIONS ── */
+			.section {
+				animation: fadeUp 0.4s ease both;
+			}
+			@keyframes fadeUp {
+				from {
+					opacity: 0;
+					transform: translateY(12px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
+		<nav class="sidebar">
+			<div class="sidebar-logo">
+				<div class="logo-icon">J</div>
+				<div class="logo-text">
+					<div class="logo-name"><span>J</span>naya</div>
+					<div class="logo-sub">Software Solutions</div>
+				</div>
+			</div>
+			<div class="sidebar-version">API v1.0 — Phase 1</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Overview</div>
+				<a href="#overview" class="nav-link">Introduction</a>
+				<a href="#base-url" class="nav-link">Base URL & Versioning</a>
+				<a href="#auth" class="nav-link">Authentication</a>
+				<a href="#rbac" class="nav-link">Roles & Permissions</a>
+				<a href="#errors" class="nav-link">Error Handling</a>
+				<a href="#swagger" class="nav-link">Swagger UI Testing</a>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Auth Endpoints</div>
+				<a href="#ep-register-customer" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Register
+					Customer</a
+				>
+				<a href="#ep-register-partner" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Register
+					Delivery</a
+				>
+				<a href="#ep-login" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Login</a
+				>
+				<a href="#ep-refresh" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Refresh
+					Token</a
+				>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Restaurant</div>
+				<a href="#ep-get-restaurants" class="nav-link"
+					><span class="method-badge badge-get">GET</span> Get
+					Restaurants</a
+				>
+				<a href="#ep-get-restaurant" class="nav-link"
+					><span class="method-badge badge-get">GET</span> Get by
+					ID</a
+				>
+				<a href="#ep-create-restaurant" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Create
+					Restaurant</a
+				>
+				<a href="#ep-update-restaurant" class="nav-link"
+					><span class="method-badge badge-put">PUT</span> Update
+					Restaurant</a
+				>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Menu</div>
+				<a href="#ep-get-menu" class="nav-link"
+					><span class="method-badge badge-get">GET</span> Get Menu</a
+				>
+				<a href="#ep-create-item" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Create
+					Item</a
+				>
+				<a href="#ep-update-item" class="nav-link"
+					><span class="method-badge badge-put">PUT</span> Update
+					Item</a
+				>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Cart & Orders</div>
+				<a href="#ep-cart" class="nav-link"
+					><span class="method-badge badge-get">GET</span> Get Cart</a
+				>
+				<a href="#ep-add-cart" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Add to
+					Cart</a
+				>
+				<a href="#ep-create-order" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Place
+					Order</a
+				>
+				<a href="#ep-update-status" class="nav-link"
+					><span class="method-badge badge-patch">PATCH</span> Update
+					Status</a
+				>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Payment</div>
+				<a href="#ep-initiate-payment" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Initiate
+					Payment</a
+				>
+				<a href="#ep-verify-payment" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Verify
+					Payment</a
+				>
+			</div>
+
+			<div class="nav-section">
+				<div class="nav-section-title">Reviews & Delivery</div>
+				<a href="#ep-create-review" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Submit
+					Review</a
+				>
+				<a href="#ep-update-location" class="nav-link"
+					><span class="method-badge badge-post">POST</span> Update
+					Location</a
+				>
+				<a href="#signalr" class="nav-link">SignalR Hubs</a>
+			</div>
+
+			<div class="sidebar-footer">
+				© 2025 Jnaya LLC · All rights reserved
+			</div>
+		</nav>
+
+		<!-- ═══════════════════════════════════════════════════════════ MAIN -->
+		<main class="main">
+			<!-- COVER -->
+			<div class="cover">
+				<div class="cover-grid"></div>
+				<div class="cover-glow"></div>
+				<div class="cover-eyebrow">Technical Documentation</div>
+				<h1>
+					Swadify - Food Delivery <span>API</span><br />Reference
+					Guide
+				</h1>
+				<p class="cover-sub">
+					Complete REST API documentation for the Food Delivery
+					Platform — Phase 1. Covers authentication, restaurants, menu
+					management, cart, orders, payments, reviews, and real-time
+					delivery tracking.
+				</p>
+				<div class="cover-meta">
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Version</span>
+						<span class="cover-meta-value highlight"
+							>v1.0 — Phase 1</span
+						>
+					</div>
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Framework</span>
+						<span class="cover-meta-value">.NET 9 Web API</span>
+					</div>
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Database</span>
+						<span class="cover-meta-value"
+							>PostgreSQL / Supabase</span
+						>
+					</div>
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Auth</span>
+						<span class="cover-meta-value">JWT Bearer</span>
+					</div>
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Payments</span>
+						<span class="cover-meta-value">Razorpay</span>
+					</div>
+					<div class="cover-meta-item">
+						<span class="cover-meta-label">Prepared by</span>
+						<span class="cover-meta-value highlight"
+							>Jnaya LLC</span
+						>
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
+				<!-- ═══ OVERVIEW -->
+				<div class="section" id="overview">
+					<div class="section-eyebrow">01 — Overview</div>
+					<h2 class="section-title">Introduction</h2>
+					<p class="lead">
+						This document describes every endpoint of the Food
+						Delivery Platform REST API. It is intended for
+						developers integrating mobile applications (Flutter —
+						Android/iOS), customer web interfaces (Angular/Flutter
+						Web), and admin dashboards. All responses are JSON. All
+						timestamps are UTC ISO-8601.
+					</p>
+
+					<div class="info-grid">
+						<div class="info-card">
+							<div class="info-card-label">Protocol</div>
+							<div class="info-card-value">HTTPS + WSS</div>
+							<div class="info-card-desc">
+								All traffic over TLS. Plain HTTP is redirected.
+							</div>
+						</div>
+						<div class="info-card">
+							<div class="info-card-label">Content Type</div>
+							<div class="info-card-value">application/json</div>
+							<div class="info-card-desc">
+								Send
+								<code>Content-Type: application/json</code>
+								header.
+							</div>
+						</div>
+						<div class="info-card">
+							<div class="info-card-label">Real-time</div>
+							<div class="info-card-value">SignalR / WSS</div>
+							<div class="info-card-desc">
+								Notifications and live delivery tracking via
+								SignalR.
+							</div>
+						</div>
+						<div class="info-card">
+							<div class="info-card-label">Pagination</div>
+							<div class="info-card-value">page + pageSize</div>
+							<div class="info-card-desc">
+								Query params for all list endpoints. Default:
+								page=1, pageSize=10.
+							</div>
+						</div>
+						<div class="info-card">
+							<div class="info-card-label">Image Storage</div>
+							<div class="info-card-value">Cloudinary</div>
+							<div class="info-card-desc">
+								Upload images via multipart/form-data endpoints.
+							</div>
+						</div>
+						<div class="info-card">
+							<div class="info-card-label">Currency</div>
+							<div class="info-card-value">INR (₹)</div>
+							<div class="info-card-desc">
+								All monetary values are in Indian Rupees
+								(decimal 18,2).
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ BASE URL -->
+				<div class="section" id="base-url">
+					<div class="section-eyebrow">02 — Base URL</div>
+					<h2 class="section-title">Base URL & Versioning</h2>
+
+					<div class="baseurl-banner">
+						<span class="baseurl-label">Development</span>
+						<span class="baseurl-value"
+							>https://localhost:7XXX/api</span
+						>
+					</div>
+					<div class="baseurl-banner">
+						<span class="baseurl-label">Production</span>
+						<span class="baseurl-value"
+							>https://api.yourdomain.com/api</span
+						>
+					</div>
+					<div class="baseurl-banner">
+						<span class="baseurl-label">Swagger UI</span>
+						<span class="baseurl-value"
+							>https://localhost:7XXX/ (root — Development
+							only)</span
+						>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ AUTH -->
+				<div class="section" id="auth">
+					<div class="section-eyebrow">03 — Security</div>
+					<h2 class="section-title">Authentication</h2>
+					<p class="lead">
+						All protected endpoints require a JWT Bearer token in
+						the <code>Authorization</code> header. Tokens expire
+						after 24 hours. Use the refresh endpoint to obtain a new
+						access token without re-login.
+					</p>
+
+					<div class="callout callout-info">
+						<span class="callout-icon">ℹ</span>
+						<div>
+							<strong>Authorization Header Format:</strong
+							><br /><code
+								>Authorization: Bearer
+								eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code
+							>
+						</div>
+					</div>
+
+					<div class="callout callout-warning">
+						<span class="callout-icon">⚠</span>
+						<div>
+							<strong>SignalR Connection:</strong> Pass the access
+							token as a query parameter —
+							<code>?access_token=YOUR_JWT</code> — when
+							connecting to SignalR hubs, since WebSocket headers
+							are not supported by all clients.
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ RBAC -->
+				<div class="section" id="rbac">
+					<div class="section-eyebrow">04 — Authorization</div>
+					<h2 class="section-title">Roles & Permissions</h2>
+
+					<div class="role-grid">
+						<div class="role-card">
+							<div
+								class="role-icon"
+								style="background: rgba(220, 38, 38, 0.15)"
+							>
+								👑
+							</div>
+							<div class="role-name">SuperAdmin</div>
+							<div class="role-desc">
+								Full platform access. Only role that can create
+								Admin accounts and verify restaurants.
+							</div>
+						</div>
+						<div class="role-card">
+							<div
+								class="role-icon"
+								style="background: rgba(37, 99, 235, 0.15)"
+							>
+								🏪
+							</div>
+							<div class="role-name">Admin</div>
+							<div class="role-desc">
+								Restaurant owner. Manages their own restaurants,
+								menus, and orders.
+							</div>
+						</div>
+						<div class="role-card">
+							<div
+								class="role-icon"
+								style="background: rgba(5, 150, 105, 0.15)"
+							>
+								🛒
+							</div>
+							<div class="role-name">Customer</div>
+							<div class="role-desc">
+								Browses restaurants, places orders, makes
+								payments, and submits reviews.
+							</div>
+						</div>
+						<div class="role-card">
+							<div
+								class="role-icon"
+								style="background: rgba(217, 119, 6, 0.15)"
+							>
+								🛵
+							</div>
+							<div class="role-name">DeliveryPartner</div>
+							<div class="role-desc">
+								Receives deliveries, updates GPS location, and
+								completes or fails orders.
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ ERROR HANDLING -->
+				<div class="section" id="errors">
+					<div class="section-eyebrow">05 — Errors</div>
+					<h2 class="section-title">Error Handling</h2>
+					<p class="lead">
+						All errors follow a consistent
+						<code>ApiResponse&lt;T&gt;</code> structure. HTTP status
+						codes are meaningful — never 200 with an error body.
+					</p>
+
+					<div class="code-block" style="margin: 16px 0 24px">
+						<div class="code-header">
+							<div class="code-dots">
+								<div class="code-dot dot-r"></div>
+								<div class="code-dot dot-y"></div>
+								<div class="code-dot dot-g"></div>
+							</div>
+							<span class="code-lang"
+								>JSON — Error Response Schema</span
+							>
+						</div>
+						<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Descriptive human-readable error message"</span>,
+  <span class="json-key">"statusCode"</span>: <span class="json-number">400</span>,
+  <span class="json-key">"data"</span>: <span class="json-null">null</span>,
+  <span class="json-key">"errors"</span>: [<span class="json-string">"Specific validation error 1"</span>, <span class="json-string">"Specific validation error 2"</span>]
+}</code></pre>
+					</div>
+
+					<table class="error-table">
+						<thead>
+							<tr>
+								<th>HTTP Code</th>
+								<th>Meaning</th>
+								<th>Common Cause</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<span class="status-code s200">200</span>
+								</td>
+								<td style="color: #34d399">OK</td>
+								<td style="color: var(--n400)">
+									Successful GET, PATCH, PUT request.
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s201">201</span>
+								</td>
+								<td style="color: #34d399">Created</td>
+								<td style="color: var(--n400)">
+									Resource successfully created (POST).
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s400">400</span>
+								</td>
+								<td style="color: #f87171">Bad Request</td>
+								<td style="color: var(--n400)">
+									Validation failure, missing required fields,
+									business rule violation.
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s401">401</span>
+								</td>
+								<td style="color: #fbbf24">Unauthorized</td>
+								<td style="color: var(--n400)">
+									Missing token, expired token, invalid
+									credentials.
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s403">403</span>
+								</td>
+								<td style="color: #fbbf24">Forbidden</td>
+								<td style="color: var(--n400)">
+									Token valid but role insufficient for this
+									action.
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s404">404</span>
+								</td>
+								<td style="color: #f87171">Not Found</td>
+								<td style="color: var(--n400)">
+									Resource ID does not exist or access is
+									denied.
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="status-code s500">500</span>
+								</td>
+								<td style="color: var(--n600)">Server Error</td>
+								<td style="color: var(--n400)">
+									Unhandled exception. Logged via Serilog.
+									Contact support.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ SWAGGER -->
+				<div class="section" id="swagger">
+					<div class="section-eyebrow">06 — Testing</div>
+					<h2 class="section-title">Swagger UI API Testing</h2>
+					<p class="lead">
+						The API ships with a fully configured Swagger UI
+						available at the root URL in Development mode. It
+						supports JWT authentication, detailed request/response
+						schemas, and interactive endpoint testing.
+					</p>
+
+					<div class="swagger-card">
+						<div class="swagger-top">
+							<div class="swagger-logo">S</div>
+							<div>
+								<div class="swagger-title">
+									Swagger UI — Interactive API Explorer
+								</div>
+								<div class="swagger-url">
+									https://localhost:7XXX/ (accessible at root
+									in dev mode)
+								</div>
+							</div>
+						</div>
+						<div class="swagger-steps">
+							<div class="swagger-step">
+								<div class="step-num">1</div>
+								<div class="step-title">Open Swagger</div>
+								<div class="step-desc">
+									Run the project and navigate to
+									<code>https://localhost:7XXX/</code> in your
+									browser.
+								</div>
+							</div>
+							<div class="swagger-step">
+								<div class="step-num">2</div>
+								<div class="step-title">Login First</div>
+								<div class="step-desc">
+									Expand <code>POST /api/auth/login</code>,
+									click Try it out, enter credentials, and
+									Execute.
+								</div>
+							</div>
+							<div class="swagger-step">
+								<div class="step-num">3</div>
+								<div class="step-title">Authorize</div>
+								<div class="step-desc">
+									Copy the <code>accessToken</code> from the
+									response. Click the 🔒 Authorize button at
+									the top. Enter
+									<code>Bearer YOUR_TOKEN</code>.
+								</div>
+							</div>
+							<div class="swagger-step">
+								<div class="step-num">4</div>
+								<div class="step-title">Test Endpoints</div>
+								<div class="step-desc">
+									All protected endpoints now accept your
+									token. Expand, try out, and execute any
+									endpoint.
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="callout callout-success">
+						<span class="callout-icon">✓</span>
+						<div>
+							<strong>Pro tip:</strong> Use the SuperAdmin seed
+							endpoint once to create your first user, then login
+							and authorize to unlock all endpoints. The seed
+							endpoint must be deleted after first use.
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══════════════════════════════════════ AUTH ENDPOINTS -->
+				<div class="section">
+					<div class="section-eyebrow">07 — Endpoints</div>
+					<h2 class="section-title">Authentication Endpoints</h2>
+				</div>
+
+				<!-- Register Customer -->
+				<div class="endpoint-block" id="ep-register-customer">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path"
+							>/api/auth/register/customer</span
+						>
+						<span class="auth-badge auth-none">🔓 Public</span>
+						<span class="endpoint-desc"
+							>Register a new customer account</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'rc-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'rc-res')"
+							>
+								Response 201
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'rc-err')"
+							>
+								Error 400
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="rc-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"firstName"</span>: <span class="json-string">"Rahul"</span>,
+  <span class="json-key">"lastName"</span>: <span class="json-string">"Sharma"</span>,
+  <span class="json-key">"username"</span>: <span class="json-string">"rahulsharma"</span>,
+  <span class="json-key">"email"</span>: <span class="json-string">"rahul.sharma@email.com"</span>,
+  <span class="json-key">"phoneNumber"</span>: <span class="json-string">"9876543210"</span>,
+  <span class="json-key">"password"</span>: <span class="json-string">"Rahul@12345"</span>       <span class="json-comment">// min 8 chars</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="rc-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201 Created</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Customer registered successfully."</span>,
+  <span class="json-key">"statusCode"</span>: <span class="json-number">201</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"accessToken"</span>: <span class="json-string">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+    <span class="json-key">"refreshToken"</span>: <span class="json-string">"dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."</span>,
+    <span class="json-key">"expiresAt"</span>: <span class="json-string">"2025-04-20T10:30:00Z"</span>,
+    <span class="json-key">"user"</span>: {
+      <span class="json-key">"id"</span>: <span class="json-string">"3fa85f64-5717-4562-b3fc-2c963f66afa6"</span>,
+      <span class="json-key">"firstName"</span>: <span class="json-string">"Rahul"</span>,
+      <span class="json-key">"lastName"</span>: <span class="json-string">"Sharma"</span>,
+      <span class="json-key">"username"</span>: <span class="json-string">"rahulsharma"</span>,
+      <span class="json-key">"email"</span>: <span class="json-string">"rahul.sharma@email.com"</span>,
+      <span class="json-key">"phoneNumber"</span>: <span class="json-string">"9876543210"</span>,
+      <span class="json-key">"role"</span>: <span class="json-number">3</span>,         <span class="json-comment">// 3 = Customer</span>
+      <span class="json-key">"profileImageUrl"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>
+    }
+  }
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="rc-err">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 400 Bad
+											Request</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Email already registered."</span>,
+  <span class="json-key">"statusCode"</span>: <span class="json-number">400</span>,
+  <span class="json-key">"data"</span>: <span class="json-null">null</span>,
+  <span class="json-key">"errors"</span>: <span class="json-null">null</span>
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Login -->
+				<div class="endpoint-block" id="ep-login">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/auth/login</span>
+						<span class="auth-badge auth-none">🔓 Public</span>
+						<span class="endpoint-desc"
+							>Login with email, username, or phone number</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ln-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ln-res')"
+							>
+								Response 200
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ln-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Login with any
+											identifier</span
+										>
+									</div>
+									<pre><code><span class="json-comment">// Option 1 — Login with email</span>
+{ <span class="json-key">"identifier"</span>: <span class="json-string">"rahul.sharma@email.com"</span>, <span class="json-key">"password"</span>: <span class="json-string">"Rahul@12345"</span> }
+
+<span class="json-comment">// Option 2 — Login with username</span>
+{ <span class="json-key">"identifier"</span>: <span class="json-string">"rahulsharma"</span>, <span class="json-key">"password"</span>: <span class="json-string">"Rahul@12345"</span> }
+
+<span class="json-comment">// Option 3 — Login with phone</span>
+{ <span class="json-key">"identifier"</span>: <span class="json-string">"9876543210"</span>, <span class="json-key">"password"</span>: <span class="json-string">"Rahul@12345"</span> }</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ln-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 200 OK</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Login successful."</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"accessToken"</span>: <span class="json-string">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQ..."</span>,
+    <span class="json-key">"refreshToken"</span>: <span class="json-string">"xK9mP2qR7tV1wN4..."</span>,
+    <span class="json-key">"expiresAt"</span>: <span class="json-string">"2025-04-20T10:30:00Z"</span>,
+    <span class="json-key">"user"</span>: {
+      <span class="json-key">"id"</span>: <span class="json-string">"3fa85f64-5717-4562-b3fc-2c963f66afa6"</span>,
+      <span class="json-key">"role"</span>: <span class="json-number">3</span>,
+      <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>
+      <span class="json-comment">// ... full user object</span>
+    }
+  }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Register Delivery Partner -->
+				<div class="endpoint-block" id="ep-register-partner">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path"
+							>/api/auth/register/delivery-partner</span
+						>
+						<span class="auth-badge auth-none">🔓 Public</span>
+						<span class="endpoint-desc"
+							>Register a new delivery partner</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'dp-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'dp-res')"
+							>
+								Response 201
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="dp-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"firstName"</span>: <span class="json-string">"Arjun"</span>,
+  <span class="json-key">"lastName"</span>: <span class="json-string">"Patel"</span>,
+  <span class="json-key">"username"</span>: <span class="json-string">"arjunpatel"</span>,
+  <span class="json-key">"email"</span>: <span class="json-string">"arjun.delivery@email.com"</span>,
+  <span class="json-key">"phoneNumber"</span>: <span class="json-string">"9123456789"</span>,
+  <span class="json-key">"password"</span>: <span class="json-string">"Arjun@12345"</span>,
+  <span class="json-key">"vehicleType"</span>: <span class="json-string">"Bike"</span>,          <span class="json-comment">// Bike | Cycle | Car</span>
+  <span class="json-key">"vehicleNumber"</span>: <span class="json-string">"MH12AB1234"</span>,
+  <span class="json-key">"licenseNumber"</span>: <span class="json-string">"DL-2024-1234567"</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="dp-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201 Created</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Delivery partner registered successfully."</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"accessToken"</span>: <span class="json-string">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+    <span class="json-key">"refreshToken"</span>: <span class="json-string">"..."</span>,
+    <span class="json-key">"expiresAt"</span>: <span class="json-string">"2025-04-20T10:30:00Z"</span>,
+    <span class="json-key">"user"</span>: {
+      <span class="json-key">"role"</span>: <span class="json-number">4</span>  <span class="json-comment">// 4 = DeliveryPartner</span>
+    }
+  }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══════════════════════════════════════ RESTAURANT ENDPOINTS -->
+				<div class="section">
+					<div class="section-eyebrow">08 — Endpoints</div>
+					<h2 class="section-title">Restaurant Endpoints</h2>
+				</div>
+
+				<!-- Get Restaurants -->
+				<div class="endpoint-block" id="ep-get-restaurants">
+					<div class="endpoint-header">
+						<span class="method-tag method-get">GET</span>
+						<span class="endpoint-path">/api/restaurant</span>
+						<span class="auth-badge auth-none">🔓 Public</span>
+						<span class="endpoint-desc"
+							>Browse & search restaurants with filters</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'gr-params')"
+							>
+								Query Params
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'gr-res')"
+							>
+								Response 200
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="gr-params">
+								<table class="params-table">
+									<thead>
+										<tr>
+											<th>Parameter</th>
+											<th>Type</th>
+											<th>Required</th>
+											<th>Description</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="param-name">page</td>
+											<td class="param-type">integer</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Page number. Default:
+												<code>1</code>
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">pageSize</td>
+											<td class="param-type">integer</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Items per page. Default:
+												<code>10</code>, Max:
+												<code>50</code>
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">search</td>
+											<td class="param-type">string</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Search by restaurant name or
+												city
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">
+												categoryId
+											</td>
+											<td class="param-type">guid</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Filter by restaurant category
+												UUID
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">isOpen</td>
+											<td class="param-type">boolean</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												If <code>true</code>, returns
+												only restaurants with status =
+												Open
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div
+									class="callout callout-info"
+									style="margin-top: 12px"
+								>
+									<span class="callout-icon">ℹ</span>
+									<div>
+										<strong>Example URL:</strong>
+										<code
+											>GET
+											/api/restaurant?page=1&pageSize=10&search=pizza&isOpen=true</code
+										>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="gr-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Paginated Response 200</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Success"</span>,
+  <span class="json-key">"page"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"pageSize"</span>: <span class="json-number">10</span>,
+  <span class="json-key">"totalCount"</span>: <span class="json-number">42</span>,
+  <span class="json-key">"totalPages"</span>: <span class="json-number">5</span>,
+  <span class="json-key">"hasNextPage"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"hasPreviousPage"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"a1b2c3d4-e5f6-7890-abcd-ef1234567890"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"The Spice Garden"</span>,
+      <span class="json-key">"description"</span>: <span class="json-string">"Authentic North Indian cuisine"</span>,
+      <span class="json-key">"logoUrl"</span>: <span class="json-string">"https://res.cloudinary.com/demo/image/upload/v1/food-delivery/restaurant-logos/spice-garden.jpg"</span>,
+      <span class="json-key">"categoryName"</span>: <span class="json-string">"Indian"</span>,
+      <span class="json-key">"city"</span>: <span class="json-string">"Pune"</span>,
+      <span class="json-key">"state"</span>: <span class="json-string">"Maharashtra"</span>,
+      <span class="json-key">"status"</span>: <span class="json-string">"Open"</span>,
+      <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>,
+      <span class="json-key">"isVerified"</span>: <span class="json-bool">true</span>,
+      <span class="json-key">"averageRating"</span>: <span class="json-number">4.3</span>,
+      <span class="json-key">"totalRatings"</span>: <span class="json-number">128</span>,
+      <span class="json-key">"deliveryFee"</span>: <span class="json-number">40.00</span>,
+      <span class="json-key">"minimumOrderAmount"</span>: <span class="json-number">150.00</span>,
+      <span class="json-key">"estimatedDeliveryTimeMinutes"</span>: <span class="json-number">35</span>,
+      <span class="json-key">"openingTime"</span>: <span class="json-string">"11:00 AM"</span>,
+      <span class="json-key">"closingTime"</span>: <span class="json-string">"11:00 PM"</span>
+    }
+  ]
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Create Restaurant -->
+				<div class="endpoint-block" id="ep-create-restaurant">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/restaurant</span>
+						<span class="auth-badge auth-required"
+							>🔒 Admin · SuperAdmin</span
+						>
+						<span class="endpoint-desc"
+							>Create a new restaurant</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'cr-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'cr-res')"
+							>
+								Response 201
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="cr-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"name"</span>: <span class="json-string">"The Spice Garden"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Authentic North Indian cuisine with a modern twist"</span>,
+  <span class="json-key">"categoryId"</span>: <span class="json-string">"a7b8c9d0-e1f2-3456-0123-567890123456"</span>,  <span class="json-comment">// Indian category</span>
+  <span class="json-key">"phoneNumber"</span>: <span class="json-string">"02012345678"</span>,
+  <span class="json-key">"email"</span>: <span class="json-string">"contact@spicegarden.com"</span>,
+  <span class="json-key">"addressLine1"</span>: <span class="json-string">"Shop 5, Koregaon Park"</span>,
+  <span class="json-key">"addressLine2"</span>: <span class="json-string">"Near Lane 7"</span>,
+  <span class="json-key">"city"</span>: <span class="json-string">"Pune"</span>,
+  <span class="json-key">"state"</span>: <span class="json-string">"Maharashtra"</span>,
+  <span class="json-key">"pinCode"</span>: <span class="json-string">"411001"</span>,
+  <span class="json-key">"latitude"</span>: <span class="json-number">18.5362</span>,
+  <span class="json-key">"longitude"</span>: <span class="json-number">73.8938</span>,
+  <span class="json-key">"openingTime"</span>: <span class="json-string">"11:00:00"</span>,
+  <span class="json-key">"closingTime"</span>: <span class="json-string">"23:00:00"</span>,
+  <span class="json-key">"deliveryFee"</span>: <span class="json-number">40.00</span>,
+  <span class="json-key">"minimumOrderAmount"</span>: <span class="json-number">150.00</span>,
+  <span class="json-key">"estimatedDeliveryTimeMinutes"</span>: <span class="json-number">35</span>,
+  <span class="json-key">"deliveryRadiusKm"</span>: <span class="json-number">7.0</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="cr-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201 Created</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Created successfully"</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"f9a1b2c3-d4e5-6789-f012-345678901234"</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"The Spice Garden"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"Closed"</span>,        <span class="json-comment">// Default — Admin must open it</span>
+    <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>,
+    <span class="json-key">"isVerified"</span>: <span class="json-bool">false</span>,       <span class="json-comment">// SuperAdmin must verify</span>
+    <span class="json-key">"createdAt"</span>: <span class="json-string">"2025-04-19T08:00:00Z"</span>
+  }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Update Restaurant -->
+				<div class="endpoint-block" id="ep-update-restaurant">
+					<div class="endpoint-header">
+						<span class="method-tag method-put">PUT</span>
+						<span class="endpoint-path">/api/restaurant/{id}</span>
+						<span class="auth-badge auth-required"
+							>🔒 Admin · SuperAdmin</span
+						>
+						<span class="endpoint-desc"
+							>Update restaurant details (partial updates
+							supported)</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ur-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ur-res')"
+							>
+								Response 200
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ur-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Partial update (all fields
+											optional)</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"status"</span>: <span class="json-number">1</span>,          <span class="json-comment">// 1=Open 2=Closed 3=ClosingSoon 4=OpeningSoon 5=TemporarilyClosed</span>
+  <span class="json-key">"deliveryFee"</span>: <span class="json-number">50.00</span>,
+  <span class="json-key">"estimatedDeliveryTimeMinutes"</span>: <span class="json-number">30</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ur-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 200 OK</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Restaurant updated."</span>,
+  <span class="json-key">"data"</span>: { <span class="json-comment">/* full RestaurantResponseDto */</span> }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ MENU -->
+				<div class="section">
+					<div class="section-eyebrow">09 — Endpoints</div>
+					<h2 class="section-title">Menu Endpoints</h2>
+				</div>
+
+				<!-- Get Menu -->
+				<div class="endpoint-block" id="ep-get-menu">
+					<div class="endpoint-header">
+						<span class="method-tag method-get">GET</span>
+						<span class="endpoint-path"
+							>/api/menu/restaurant/{restaurantId}</span
+						>
+						<span class="auth-badge auth-none">🔓 Public</span>
+						<span class="endpoint-desc"
+							>Get the full menu for a restaurant</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'gm-res')"
+							>
+								Response 200
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'gm-params')"
+							>
+								Query Params
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="gm-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 200</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"cc1d2e3f-4a5b-6789-c012-def345678901"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"Butter Chicken"</span>,
+      <span class="json-key">"description"</span>: <span class="json-string">"Tender chicken in rich tomato-butter gravy"</span>,
+      <span class="json-key">"categoryName"</span>: <span class="json-string">"Main Course"</span>,
+      <span class="json-key">"imageUrl"</span>: <span class="json-string">"https://res.cloudinary.com/.../butter-chicken.jpg"</span>,
+      <span class="json-key">"price"</span>: <span class="json-number">320.00</span>,
+      <span class="json-key">"discountedPrice"</span>: <span class="json-number">280.00</span>,
+      <span class="json-key">"effectivePrice"</span>: <span class="json-number">280.00</span>,
+      <span class="json-key">"isAvailable"</span>: <span class="json-bool">true</span>,
+      <span class="json-key">"isVegetarian"</span>: <span class="json-bool">false</span>,
+      <span class="json-key">"isVegan"</span>: <span class="json-bool">false</span>,
+      <span class="json-key">"isBestseller"</span>: <span class="json-bool">true</span>,
+      <span class="json-key">"isSpicy"</span>: <span class="json-bool">false</span>,
+      <span class="json-key">"preparationTimeMinutes"</span>: <span class="json-number">20</span>,
+      <span class="json-key">"averageRating"</span>: <span class="json-number">4.6</span>,
+      <span class="json-key">"caloriesKcal"</span>: <span class="json-number">450</span>
+    }
+  ],
+  <span class="json-key">"totalCount"</span>: <span class="json-number">24</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="gm-params">
+								<table class="params-table">
+									<thead>
+										<tr>
+											<th>Parameter</th>
+											<th>Type</th>
+											<th>Required</th>
+											<th>Description</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="param-name">
+												categoryId
+											</td>
+											<td class="param-type">guid</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Filter by menu category (e.g.,
+												Starters only)
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">isVeg</td>
+											<td class="param-type">boolean</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												If <code>true</code>, shows only
+												vegetarian items
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">page</td>
+											<td class="param-type">integer</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Default: <code>1</code>
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">pageSize</td>
+											<td class="param-type">integer</td>
+											<td>
+												<span
+													class="param-required req-no"
+													>optional</span
+												>
+											</td>
+											<td class="param-desc">
+												Default: <code>50</code>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Create Menu Item -->
+				<div class="endpoint-block" id="ep-create-item">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/menu</span>
+						<span class="auth-badge auth-required"
+							>🔒 Admin · SuperAdmin</span
+						>
+						<span class="endpoint-desc"
+							>Add a new item to a restaurant's menu</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ci-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ci-res')"
+							>
+								Response 201
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ci-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"restaurantId"</span>: <span class="json-string">"f9a1b2c3-d4e5-6789-f012-345678901234"</span>,
+  <span class="json-key">"categoryId"</span>: <span class="json-string">"11111111-1111-1111-1111-111111111102"</span>,  <span class="json-comment">// Main Course</span>
+  <span class="json-key">"name"</span>: <span class="json-string">"Paneer Tikka Masala"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Cottage cheese cubes in spiced tomato gravy"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">299.00</span>,
+  <span class="json-key">"discountedPrice"</span>: <span class="json-number">249.00</span>,
+  <span class="json-key">"isVegetarian"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"isVegan"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"isGlutenFree"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"isSpicy"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"preparationTimeMinutes"</span>: <span class="json-number">18</span>,
+  <span class="json-key">"caloriesKcal"</span>: <span class="json-number">380</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ci-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201 Created</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Created successfully"</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"44556677-8899-aabb-ccdd-eeff00112233"</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"Paneer Tikka Masala"</span>,
+    <span class="json-key">"effectivePrice"</span>: <span class="json-number">249.00</span>,
+    <span class="json-key">"isAvailable"</span>: <span class="json-bool">true</span>
+  }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ CART & ORDERS -->
+				<div class="section">
+					<div class="section-eyebrow">10 — Endpoints</div>
+					<h2 class="section-title">Cart & Order Endpoints</h2>
+				</div>
+
+				<!-- Add to Cart -->
+				<div class="endpoint-block" id="ep-add-cart">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/cart/items</span>
+						<span class="auth-badge auth-required"
+							>🔒 Customer</span
+						>
+						<span class="endpoint-desc"
+							>Add an item to cart (creates cart if none
+							exists)</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ac-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ac-res')"
+							>
+								Response 200
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ac-err')"
+							>
+								Error Cases
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ac-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"menuItemId"</span>: <span class="json-string">"44556677-8899-aabb-ccdd-eeff00112233"</span>,
+  <span class="json-key">"quantity"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"specialInstructions"</span>: <span class="json-string">"Extra spicy please, no onions"</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ac-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Cart Response</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Item added to cart."</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"cart-uuid"</span>,
+    <span class="json-key">"restaurantId"</span>: <span class="json-string">"f9a1b2c3-d4e5-6789-f012-345678901234"</span>,
+    <span class="json-key">"restaurantName"</span>: <span class="json-string">"The Spice Garden"</span>,
+    <span class="json-key">"items"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-string">"cart-item-uuid"</span>,
+        <span class="json-key">"menuItemId"</span>: <span class="json-string">"44556677-8899-aabb-ccdd-eeff00112233"</span>,
+        <span class="json-key">"itemName"</span>: <span class="json-string">"Paneer Tikka Masala"</span>,
+        <span class="json-key">"quantity"</span>: <span class="json-number">2</span>,
+        <span class="json-key">"unitPrice"</span>: <span class="json-number">249.00</span>,
+        <span class="json-key">"totalPrice"</span>: <span class="json-number">498.00</span>,
+        <span class="json-key">"isAvailable"</span>: <span class="json-bool">true</span>
+      }
+    ],
+    <span class="json-key">"subTotal"</span>: <span class="json-number">498.00</span>,
+    <span class="json-key">"totalItems"</span>: <span class="json-number">2</span>
+  }
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ac-err">
+								<div class="callout callout-warning">
+									<span class="callout-icon">⚠</span>
+									<div>
+										<strong
+											>Cross-restaurant error
+											(400):</strong
+										>
+										If the customer already has items from a
+										different restaurant in their cart,
+										adding an item from a new restaurant
+										will return:
+										<code
+											>"Your cart has items from another
+											restaurant. Please clear cart
+											first."</code
+										>
+									</div>
+								</div>
+								<div
+									class="callout callout-warning"
+									style="margin-top: 8px"
+								>
+									<span class="callout-icon">⚠</span>
+									<div>
+										<strong>Unavailable item (400):</strong>
+										Returns
+										<code
+											>"This item is currently
+											unavailable."</code
+										>
+										if the menu item has
+										<code>isAvailable: false</code>.
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Place Order -->
+				<div class="endpoint-block" id="ep-create-order">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/order</span>
+						<span class="auth-badge auth-required"
+							>🔒 Customer</span
+						>
+						<span class="endpoint-desc"
+							>Place an order from the active cart —
+							auto-calculates totals, clears cart</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'po-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'po-res')"
+							>
+								Response 201
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="po-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"restaurantId"</span>: <span class="json-string">"f9a1b2c3-d4e5-6789-f012-345678901234"</span>,
+  <span class="json-key">"paymentMethod"</span>: <span class="json-number">2</span>,              <span class="json-comment">// 1=COD  2=Online (Razorpay)</span>
+  <span class="json-key">"deliveryAddressLine1"</span>: <span class="json-string">"Flat 304, Sunrise Apartments"</span>,
+  <span class="json-key">"deliveryAddressLine2"</span>: <span class="json-string">"Baner Road"</span>,
+  <span class="json-key">"deliveryCity"</span>: <span class="json-string">"Pune"</span>,
+  <span class="json-key">"deliveryState"</span>: <span class="json-string">"Maharashtra"</span>,
+  <span class="json-key">"deliveryPinCode"</span>: <span class="json-string">"411045"</span>,
+  <span class="json-key">"deliveryLatitude"</span>: <span class="json-number">18.5590</span>,
+  <span class="json-key">"deliveryLongitude"</span>: <span class="json-number">73.7868</span>,
+  <span class="json-key">"specialInstructions"</span>: <span class="json-string">"Leave at door, please ring the bell"</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="po-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201 Created</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Order placed successfully."</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"ord-uuid-here"</span>,
+    <span class="json-key">"orderNumber"</span>: <span class="json-string">"FD-20250419-0001"</span>,
+    <span class="json-key">"uniqueDeliveryCode"</span>: <span class="json-string">"7342"</span>,         <span class="json-comment">// 4-digit code for handover</span>
+    <span class="json-key">"status"</span>: <span class="json-string">"Pending"</span>,
+    <span class="json-key">"paymentStatus"</span>: <span class="json-string">"Pending"</span>,
+    <span class="json-key">"paymentMethod"</span>: <span class="json-string">"Online"</span>,
+    <span class="json-key">"subTotal"</span>: <span class="json-number">498.00</span>,
+    <span class="json-key">"deliveryFee"</span>: <span class="json-number">40.00</span>,
+    <span class="json-key">"taxAmount"</span>: <span class="json-number">24.90</span>,         <span class="json-comment">// 5% GST</span>
+    <span class="json-key">"discountAmount"</span>: <span class="json-number">0.00</span>,
+    <span class="json-key">"totalAmount"</span>: <span class="json-number">562.90</span>,
+    <span class="json-key">"estimatedDeliveryTime"</span>: <span class="json-string">"2025-04-19T10:05:00Z"</span>,
+    <span class="json-key">"items"</span>: [
+      {
+        <span class="json-key">"itemName"</span>: <span class="json-string">"Paneer Tikka Masala"</span>,
+        <span class="json-key">"quantity"</span>: <span class="json-number">2</span>,
+        <span class="json-key">"unitPrice"</span>: <span class="json-number">249.00</span>,
+        <span class="json-key">"totalPrice"</span>: <span class="json-number">498.00</span>
+      }
+    ]
+  }
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Update Order Status -->
+				<div class="endpoint-block" id="ep-update-status">
+					<div class="endpoint-header">
+						<span class="method-tag method-patch">PATCH</span>
+						<span class="endpoint-path"
+							>/api/order/{id}/status</span
+						>
+						<span class="auth-badge auth-required"
+							>🔒 Admin · SuperAdmin · DeliveryPartner</span
+						>
+						<span class="endpoint-desc"
+							>Update order status through the fulfilment
+							workflow</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'us-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'us-flow')"
+							>
+								Status Flow
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="us-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"status"</span>: <span class="json-number">3</span>,                          <span class="json-comment">// 3 = Preparing</span>
+  <span class="json-key">"cancellationReason"</span>: <span class="json-null">null</span>         <span class="json-comment">// Required only if status = 8 (Cancelled)</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="us-flow">
+								<table class="params-table">
+									<thead>
+										<tr>
+											<th>Value</th>
+											<th>Status</th>
+											<th>Who Sets It</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="param-name">1</td>
+											<td style="color: var(--n300)">
+												Pending
+											</td>
+											<td style="color: var(--n400)">
+												System (on order creation)
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">2</td>
+											<td style="color: #34d399">
+												Confirmed
+											</td>
+											<td style="color: var(--n400)">
+												Admin (restaurant confirms)
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">3</td>
+											<td style="color: #fbbf24">
+												Preparing
+											</td>
+											<td style="color: var(--n400)">
+												Admin
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">4</td>
+											<td style="color: #fbbf24">
+												ReadyForPickup
+											</td>
+											<td style="color: var(--n400)">
+												Admin
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">5</td>
+											<td style="color: #a78bfa">
+												AssignedToDelivery
+											</td>
+											<td style="color: var(--n400)">
+												System (on assign)
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">6</td>
+											<td style="color: #60a5fa">
+												OutForDelivery
+											</td>
+											<td style="color: var(--n400)">
+												Admin
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">7</td>
+											<td style="color: #34d399">
+												Delivered
+											</td>
+											<td style="color: var(--n400)">
+												DeliveryPartner
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">8</td>
+											<td style="color: #f87171">
+												Cancelled
+											</td>
+											<td style="color: var(--n400)">
+												Admin / SuperAdmin
+											</td>
+										</tr>
+										<tr>
+											<td class="param-name">9</td>
+											<td style="color: #f87171">
+												Failed
+											</td>
+											<td style="color: var(--n400)">
+												DeliveryPartner
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ PAYMENT -->
+				<div class="section">
+					<div class="section-eyebrow">11 — Endpoints</div>
+					<h2 class="section-title">Payment Endpoints</h2>
+				</div>
+
+				<!-- Initiate Payment -->
+				<div class="endpoint-block" id="ep-initiate-payment">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/payment/initiate</span>
+						<span class="auth-badge auth-required"
+							>🔒 Customer</span
+						>
+						<span class="endpoint-desc"
+							>Create a Razorpay order for the placed order</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ip-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ip-res')"
+							>
+								Response
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ip-flow')"
+							>
+								Payment Flow
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ip-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{ <span class="json-key">"orderId"</span>: <span class="json-string">"ord-uuid-here"</span> }</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ip-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 200 (pass to
+											Razorpay SDK)</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"razorpayOrderId"</span>: <span class="json-string">"order_PxK9mQ2rT7vW"</span>,
+    <span class="json-key">"amount"</span>: <span class="json-number">562.90</span>,
+    <span class="json-key">"currency"</span>: <span class="json-string">"INR"</span>,
+    <span class="json-key">"razorpayKeyId"</span>: <span class="json-string">"rzp_live_xxxxxxxxxxxx"</span>,
+    <span class="json-key">"orderNumber"</span>: <span class="json-string">"FD-20250419-0001"</span>,
+    <span class="json-key">"customerName"</span>: <span class="json-string">"Rahul Sharma"</span>,
+    <span class="json-key">"customerEmail"</span>: <span class="json-string">"rahul.sharma@email.com"</span>,
+    <span class="json-key">"customerPhone"</span>: <span class="json-string">"9876543210"</span>
+  }
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ip-flow">
+								<div class="callout callout-info">
+									<span class="callout-icon">ℹ</span>
+									<div>
+										<strong
+											>Razorpay Integration Flow:</strong
+										><br />
+										1. Customer places order →
+										<code>POST /api/order</code><br />
+										2. Call
+										<code>POST /api/payment/initiate</code>
+										→ get <code>razorpayOrderId</code> &
+										<code>razorpayKeyId</code><br />
+										3. Open Razorpay checkout in Flutter/Web
+										SDK with the returned data<br />
+										4. On success callback, call
+										<code>POST /api/payment/verify</code>
+										with the 3 Razorpay IDs<br />
+										5. API verifies signature — order status
+										changes to <strong>Confirmed</strong>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Verify Payment -->
+				<div class="endpoint-block" id="ep-verify-payment">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/payment/verify</span>
+						<span class="auth-badge auth-required"
+							>🔒 Customer</span
+						>
+						<span class="endpoint-desc"
+							>Verify payment signature after Razorpay checkout
+							success</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'vp-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'vp-res')"
+							>
+								Response
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="vp-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body (from Razorpay
+											callback)</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"orderId"</span>: <span class="json-string">"ord-uuid-here"</span>,
+  <span class="json-key">"razorpayOrderId"</span>: <span class="json-string">"order_PxK9mQ2rT7vW"</span>,
+  <span class="json-key">"razorpayPaymentId"</span>: <span class="json-string">"pay_QaB3cD4eE5fF6g"</span>,
+  <span class="json-key">"razorpaySignature"</span>: <span class="json-string">"9ef4b32a1c7d8f2e..."</span>  <span class="json-comment">// HMAC-SHA256 from Razorpay</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="vp-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 200</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Payment verified successfully."</span>
+  <span class="json-comment">// Order status → Confirmed, PaymentStatus → Completed</span>
+  <span class="json-comment">// Customer receives push notification</span>
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ REVIEWS -->
+				<div class="section">
+					<div class="section-eyebrow">12 — Endpoints</div>
+					<h2 class="section-title">Review Endpoints</h2>
+				</div>
+
+				<div class="endpoint-block" id="ep-create-review">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path">/api/review</span>
+						<span class="auth-badge auth-required"
+							>🔒 Customer</span
+						>
+						<span class="endpoint-desc"
+							>Submit a review for a completed (Delivered)
+							order</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'rv-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'rv-res')"
+							>
+								Response
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="rv-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Request Body</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"orderId"</span>: <span class="json-string">"ord-uuid-here"</span>,
+  <span class="json-key">"rating"</span>: <span class="json-number">5</span>,                        <span class="json-comment">// Overall: 1-5</span>
+  <span class="json-key">"comment"</span>: <span class="json-string">"Amazing food, delivered hot! Will order again."</span>,
+  <span class="json-key">"foodRating"</span>: <span class="json-number">5</span>,                    <span class="json-comment">// Food quality: 1-5 (optional)</span>
+  <span class="json-key">"deliveryRating"</span>: <span class="json-number">4</span>               <span class="json-comment">// Delivery experience: 1-5 (optional)</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="rv-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response 201</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"message"</span>: <span class="json-string">"Review submitted."</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-string">"rev-uuid"</span>,
+    <span class="json-key">"customerName"</span>: <span class="json-string">"Rahul Sharma"</span>,
+    <span class="json-key">"rating"</span>: <span class="json-number">5</span>,
+    <span class="json-key">"comment"</span>: <span class="json-string">"Amazing food..."</span>,
+    <span class="json-key">"isApproved"</span>: <span class="json-bool">true</span>,
+    <span class="json-key">"adminReply"</span>: <span class="json-null">null</span>,
+    <span class="json-key">"createdAt"</span>: <span class="json-string">"2025-04-19T12:00:00Z"</span>
+  }
+}
+<span class="json-comment">// Restaurant's averageRating recalculated automatically</span></code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ DELIVERY TRACKING -->
+				<div class="section">
+					<div class="section-eyebrow">13 — Endpoints</div>
+					<h2 class="section-title">Delivery Tracking Endpoints</h2>
+				</div>
+
+				<div class="endpoint-block" id="ep-update-location">
+					<div class="endpoint-header">
+						<span class="method-tag method-post">POST</span>
+						<span class="endpoint-path"
+							>/api/delivery/location</span
+						>
+						<span class="auth-badge auth-required"
+							>🔒 DeliveryPartner</span
+						>
+						<span class="endpoint-desc"
+							>Push GPS coordinates — broadcasts via SignalR to
+							customer tracking</span
+						>
+					</div>
+					<div class="endpoint-body">
+						<div class="endpoint-tabs">
+							<div
+								class="endpoint-tab active"
+								onclick="switchTab(this, 'ul-req')"
+							>
+								Request
+							</div>
+							<div
+								class="endpoint-tab"
+								onclick="switchTab(this, 'ul-res')"
+							>
+								Response
+							</div>
+						</div>
+						<div class="tab-content">
+							<div class="tab-pane active" id="ul-req">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Call every 5-10 seconds from
+											mobile</span
+										>
+									</div>
+									<pre><code>{
+  <span class="json-key">"latitude"</span>: <span class="json-number">18.5120</span>,
+  <span class="json-key">"longitude"</span>: <span class="json-number">73.8567</span>,
+  <span class="json-key">"speedKmh"</span>: <span class="json-number">24.5</span>        <span class="json-comment">// optional</span>
+}</code></pre>
+								</div>
+							</div>
+							<div class="tab-pane" id="ul-res">
+								<div class="code-block">
+									<div class="code-header">
+										<div class="code-dots">
+											<div class="code-dot dot-r"></div>
+											<div class="code-dot dot-y"></div>
+											<div class="code-dot dot-g"></div>
+										</div>
+										<span class="code-lang"
+											>JSON — Response + SignalR
+											Broadcast</span
+										>
+									</div>
+									<pre><code>{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"message"</span>: <span class="json-string">"Location updated."</span> }
+
+<span class="json-comment">// Simultaneously, SignalR broadcasts to group "order-{orderId}":</span>
+{
+  <span class="json-key">"orderId"</span>: <span class="json-string">"ord-uuid"</span>,
+  <span class="json-key">"latitude"</span>: <span class="json-number">18.5120</span>,
+  <span class="json-key">"longitude"</span>: <span class="json-number">73.8567</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-04-19T10:02:34Z"</span>
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ SIGNALR HUBS -->
+				<div class="section" id="signalr">
+					<div class="section-eyebrow">14 — Real-Time</div>
+					<h2 class="section-title">SignalR Hubs</h2>
+					<p class="lead">
+						Connect using the SignalR client library. Pass your JWT
+						as a query parameter. Both hubs require authentication.
+					</p>
+
+					<div class="callout callout-info">
+						<span class="callout-icon">ℹ</span>
+						<div>
+							<strong>Flutter connection example:</strong
+							><br /><code
+								>HubConnectionBuilder().withUrl("https://api.yourdomain.com/hubs/notifications?access_token=YOUR_JWT").build()</code
+							>
+						</div>
+					</div>
+
+					<div class="hub-card">
+						<div class="hub-name">🔔 Notification Hub</div>
+						<div class="hub-url">
+							wss://api.yourdomain.com/hubs/notifications
+						</div>
+						<div class="event-list">
+							<div class="event-item">
+								<span class="event-name"
+									>ReceiveNotification</span
+								>
+								<span class="event-desc"
+									>Sent to user when any notification is
+									created (order updates, payment, new order
+									alerts for admin)</span
+								>
+							</div>
+						</div>
+					</div>
+
+					<div class="hub-card">
+						<div class="hub-name">📍 Delivery Tracking Hub</div>
+						<div class="hub-url">
+							wss://api.yourdomain.com/hubs/delivery
+						</div>
+						<div class="event-list">
+							<div class="event-item">
+								<span class="event-name"
+									>TrackOrder(orderId)</span
+								>
+								<span class="event-desc"
+									>Client method — call this to join the order
+									group and start receiving live GPS
+									updates</span
+								>
+							</div>
+							<div class="event-item">
+								<span class="event-name"
+									>StopTrackingOrder(orderId)</span
+								>
+								<span class="event-desc"
+									>Client method — leave the order group when
+									done tracking</span
+								>
+							</div>
+							<div class="event-item">
+								<span class="event-name">LocationUpdate</span>
+								<span class="event-desc"
+									>Server → Client. Fires when delivery
+									partner pushes location. Contains orderId,
+									latitude, longitude, timestamp.</span
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="divider"></div>
+
+				<!-- ═══ SEEDED DATA -->
+				<div class="section">
+					<div class="section-eyebrow">15 — Reference Data</div>
+					<h2 class="section-title">Seeded Category IDs</h2>
+					<p>
+						These IDs are seeded on first migration and can be used
+						immediately in requests.
+					</p>
+
+					<h3 class="sub-title">Restaurant Categories</h3>
+					<table class="params-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="param-name">
+									a1b2c3d4-e5f6-7890-abcd-ef1234567890
+								</td>
+								<td style="color: var(--n300)">Café</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									b2c3d4e5-f6a7-8901-bcde-f12345678901
+								</td>
+								<td style="color: var(--n300)">Bar & Grill</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									c3d4e5f6-a7b8-9012-cdef-123456789012
+								</td>
+								<td style="color: var(--n300)">Fine Dining</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									d4e5f6a7-b8c9-0123-def0-234567890123
+								</td>
+								<td style="color: var(--n300)">Fast Food</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									e5f6a7b8-c9d0-1234-ef01-345678901234
+								</td>
+								<td style="color: var(--n300)">Pizzeria</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									a7b8c9d0-e1f2-3456-0123-567890123456
+								</td>
+								<td style="color: var(--n300)">Indian</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									b8c9d0e1-f2a3-4567-1234-678901234567
+								</td>
+								<td style="color: var(--n300)">Bakery</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<h3 class="sub-title">Menu Categories</h3>
+					<table class="params-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111101
+								</td>
+								<td style="color: var(--n300)">Starters</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111102
+								</td>
+								<td style="color: var(--n300)">Main Course</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111103
+								</td>
+								<td style="color: var(--n300)">
+									Rice & Biryani
+								</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111104
+								</td>
+								<td style="color: var(--n300)">Breads</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111105
+								</td>
+								<td style="color: var(--n300)">
+									Soups & Salads
+								</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111106
+								</td>
+								<td style="color: var(--n300)">Desserts</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111107
+								</td>
+								<td style="color: var(--n300)">Beverages</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111108
+								</td>
+								<td style="color: var(--n300)">Fast Food</td>
+							</tr>
+							<tr>
+								<td class="param-name">
+									11111111-1111-1111-1111-111111111109
+								</td>
+								<td style="color: var(--n300)">Combo Meals</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- FOOTER -->
+				<div class="divider"></div>
+				<div style="text-align: center; padding: 24px 0 40px">
+					<div
+						style="
+							display: inline-flex;
+							align-items: center;
+							gap: 10px;
+							margin-bottom: 12px;
+						"
+					>
+						<div
+							class="logo-icon"
+							style="
+								width: 28px;
+								height: 28px;
+								font-size: 14px;
+								border-radius: 8px;
+							"
+						>
+							J
+						</div>
+						<span
+							style="
+								font-family: var(--ff-head);
+								font-weight: 700;
+								font-size: 16px;
+								color: #fff;
+							"
+							><span style="color: var(--sky)">J</span>naya
+							<span style="color: var(--n600); font-weight: 400"
+								>Software Solutions</span
+							></span
+						>
+					</div>
+					<p
+						style="
+							font-family: var(--ff-mono);
+							font-size: 10px;
+							color: var(--n700);
+							letter-spacing: 2px;
+							text-transform: uppercase;
+						"
+					>
+						Food Delivery API · v1.0 · Phase 1 · © 2025 Jnaya LLC
+					</p>
+				</div>
+			</div>
+			<!-- /content -->
+		</main>
+		<!-- /main -->
+
+		<script>
+			function switchTab(el, targetId) {
+				const tabGroup = el.closest(".endpoint-body");
+				tabGroup
+					.querySelectorAll(".endpoint-tab")
+					.forEach((t) => t.classList.remove("active"));
+				tabGroup
+					.querySelectorAll(".tab-pane")
+					.forEach((p) => p.classList.remove("active"));
+				el.classList.add("active");
+				const pane = document.getElementById(targetId);
+				if (pane) pane.classList.add("active");
+			}
+
+			// Sidebar active state on scroll
+			const sections = document.querySelectorAll(
+				".endpoint-block, .section[id]",
+			);
+			const navLinks = document.querySelectorAll(".nav-link");
+
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							const id = e.target.id;
+							navLinks.forEach((l) => {
+								l.classList.toggle(
+									"active",
+									l.getAttribute("href") === "#" + id,
+								);
+							});
+						}
+					});
+				},
+				{ rootMargin: "-40% 0px -55% 0px" },
+			);
+
+			sections.forEach((s) => {
+				if (s.id) observer.observe(s);
+			});
+		</script>
+	</body>
+</html>
