@@ -78,10 +78,9 @@ builder.Services.AddAuthorization();
 //var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 var allowedOrigins = new string[]
 {
+    "http://localhost:4200",
     "http://localhost:3005",
     "https://localhost:3004",
-    "http://localhost:4200",
-    "https://swadify-api.onrender.com"
 };
 builder.Services.AddCors(options =>
 {
@@ -175,8 +174,8 @@ app.UseSerilogRequestLogging(options =>
     options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000}ms";
 });
 
+app.UseCors("AllowSpecificOrigins");
 app.UseHttpsRedirection();
-app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
