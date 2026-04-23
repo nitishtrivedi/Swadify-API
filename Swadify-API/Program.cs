@@ -80,6 +80,7 @@ var allowedOrigins = new string[]
 {
     "http://localhost:3005",
     "https://localhost:3004",
+    "https://localhost:4200",
     "https://swadify-api.onrender.com"
 };
 builder.Services.AddCors(options =>
