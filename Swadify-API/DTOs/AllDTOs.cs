@@ -154,6 +154,7 @@ namespace Swadify_API.DTOs
         public string Status { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool IsVerified { get; set; }
+        public bool IsFeatured { get; set; }
         public string OpeningTime { get; set; } = string.Empty;
         public string ClosingTime { get; set; } = string.Empty;
         public double AverageRating { get; set; }

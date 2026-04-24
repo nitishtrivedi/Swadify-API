@@ -201,7 +201,7 @@ namespace Swadify_API.Data
             });
 
             // Seed default data
-            //SeedData(modelBuilder);
+            SeedData(modelBuilder);
         }
 
         private static void SeedData(ModelBuilder modelBuilder)

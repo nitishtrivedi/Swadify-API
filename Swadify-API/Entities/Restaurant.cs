@@ -30,6 +30,7 @@ namespace Swadify_API.Entities
         public RestaurantStatus Status { get; set; } = RestaurantStatus.Closed;
         public bool IsActive { get; set; } = true;
         public bool IsVerified { get; set; } = false;
+        public bool IsFeatured { get; set; } = false;
         public TimeOnly OpeningTime { get; set; }
         public TimeOnly ClosingTime { get; set; }
 

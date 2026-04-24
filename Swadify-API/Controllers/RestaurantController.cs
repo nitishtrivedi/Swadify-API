@@ -27,6 +27,14 @@ namespace Swadify_API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("featured")]
+        [ProducesResponseType(typeof(ApiResponse<RestaurantResponseDto>), 200)]
+        public async Task<IActionResult> GetFeatured()
+        {
+            var result = await _service.GetFeaturedRestaurantsAsync();
+            return Ok(ApiResponse<RestaurantResponseDto>.Ok(result));
+        }
+
         /// <summary>Get restaurant by ID</summary>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(ApiResponse<RestaurantResponseDto>), 200)]

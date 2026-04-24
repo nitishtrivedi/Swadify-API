@@ -109,6 +109,7 @@ namespace Swadify_API.Services
             return await MapToResponseDto(restaurant, restaurant.Owner!);
         }
 
+
         public async Task<PagedResponse<RestaurantResponseDto>> GetRestaurantsAsync(int page, int pageSize, string? search, int? categoryId, bool? isOpen)
         {
             var query = _db.Restaurants
@@ -146,6 +147,8 @@ namespace Swadify_API.Services
                 TotalCount = total
             };
         }
+
+       
 
         public async Task<PagedResponse<RestaurantResponseDto>> GetMyRestaurantsAsync(int ownerId, int page, int pageSize)
         {
@@ -266,6 +269,18 @@ namespace Swadify_API.Services
                 OwnerName = $"{owner.FirstName} {owner.LastName}",
                 CreatedAt = r.CreatedAt
             });
+        }
+
+        public async Task<RestaurantResponseDto> GetFeaturedRestaurantsAsync()
+        {
+            var restaurant = await _db.Restaurants
+                .Include(r => r.Owner)
+                .Include(r => r.Category)
+                .Where(r => r.IsFeatured && r.IsActive)
+                .OrderByDescending(r => r.AverageRating)
+                .FirstOrDefaultAsync();
+            if (restaurant == null) throw new KeyNotFoundException("No featured restaurant found.");
+            return await MapToResponseDto(restaurant, restaurant.Owner!);
         }
     }
 }
