@@ -16,6 +16,7 @@ namespace Swadify_API.Interfaces
         Task<bool> ToggleActiveStatusAsync(int restaurantId, int requesterId);
         Task<bool> VerifyRestaurantAsync(int restaurantId); // SuperAdmin only
         Task<List<RestaurantCategoryDto>> GetCategoriesAsync();
+        Task<bool> DeleteRestaurantAsync(int id);
     }
 
     public class MenuCategoryDto

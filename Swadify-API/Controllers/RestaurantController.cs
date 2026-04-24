@@ -84,6 +84,16 @@ namespace Swadify_API.Controllers
             return Ok(ApiResponse<RestaurantResponseDto>.Ok(result, "Restaurant updated."));
         }
 
+        /// <summary>Delete a restaurant</summary>
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var requesterId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await _service.DeleteRestaurantAsync(id);
+            return Ok(ApiResponse<object>.Ok(null!, result ? "Restaurant deleted." : "Delete failed."));
+        }
+
         /// <summary>Upload restaurant logo</summary>
         [HttpPost("{id:int}/logo")]
         [Authorize(Roles = "Admin,SuperAdmin")]

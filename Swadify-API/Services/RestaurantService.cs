@@ -52,7 +52,8 @@ namespace Swadify_API.Services
                 DeliveryFee = dto.DeliveryFee,
                 MinimumOrderAmount = dto.MinimumOrderAmount,
                 EstimatedDeliveryTimeMinutes = dto.EstimatedDeliveryTimeMinutes,
-                DeliveryRadiusKm = dto.DeliveryRadiusKm
+                DeliveryRadiusKm = dto.DeliveryRadiusKm,
+                IsFeatured = dto.IsFeatured
             };
 
             _db.Restaurants.Add(restaurant);
@@ -61,6 +62,7 @@ namespace Swadify_API.Services
             _logger.LogInformation("Restaurant created: {Name} by Owner {OwnerId}", restaurant.Name, ownerId);
             return await MapToResponseDto(restaurant, owner);
         }
+
 
         public async Task<RestaurantResponseDto> UpdateRestaurantAsync(int restaurantId, int requesterId, UpdateRestaurantDto dto)
         {
@@ -93,6 +95,7 @@ namespace Swadify_API.Services
             if (dto.MinimumOrderAmount.HasValue) restaurant.MinimumOrderAmount = dto.MinimumOrderAmount.Value;
             if (dto.EstimatedDeliveryTimeMinutes.HasValue) restaurant.EstimatedDeliveryTimeMinutes = dto.EstimatedDeliveryTimeMinutes.Value;
             if (dto.DeliveryRadiusKm.HasValue) restaurant.DeliveryRadiusKm = dto.DeliveryRadiusKm.Value;
+            if (dto.IsFeatured.HasValue) restaurant.IsFeatured = dto.IsFeatured.Value;
 
             await _db.SaveChangesAsync();
             return await MapToResponseDto(restaurant, restaurant.Owner!);
@@ -258,6 +261,7 @@ namespace Swadify_API.Services
                 Status = r.Status.ToString(),
                 IsActive = r.IsActive,
                 IsVerified = r.IsVerified,
+                IsFeatured = r.IsFeatured,
                 OpeningTime = r.OpeningTime.ToString("hh:mm tt"),
                 ClosingTime = r.ClosingTime.ToString("hh:mm tt"),
                 AverageRating = r.AverageRating,
@@ -281,6 +285,16 @@ namespace Swadify_API.Services
                 .FirstOrDefaultAsync();
             if (restaurant == null) throw new KeyNotFoundException("No featured restaurant found.");
             return await MapToResponseDto(restaurant, restaurant.Owner!);
+        }
+
+        public async Task<bool> DeleteRestaurantAsync(int id)
+        {
+            var restaurant = _db.Restaurants.Find(id);
+            if (restaurant == null) throw new KeyNotFoundException("Restaurant not found.");
+            restaurant.IsActive = false;
+            await _db.SaveChangesAsync();
+            return true;
+
         }
     }
 }

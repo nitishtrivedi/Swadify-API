@@ -110,6 +110,7 @@ namespace Swadify_API.DTOs
         public decimal MinimumOrderAmount { get; set; }
         public int EstimatedDeliveryTimeMinutes { get; set; } = 30;
         public double DeliveryRadiusKm { get; set; } = 5.0;
+        public bool IsFeatured { get; set; }
     }
 
     public class UpdateRestaurantDto
@@ -133,6 +134,7 @@ namespace Swadify_API.DTOs
         public decimal? MinimumOrderAmount { get; set; }
         public int? EstimatedDeliveryTimeMinutes { get; set; }
         public double? DeliveryRadiusKm { get; set; }
+        public bool? IsFeatured { get; set; }
     }
 
     public class RestaurantResponseDto

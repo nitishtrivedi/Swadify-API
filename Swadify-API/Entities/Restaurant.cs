@@ -27,22 +27,22 @@ namespace Swadify_API.Entities
         public double Longitude { get; set; }
 
         // Status & Availability
-        public RestaurantStatus Status { get; set; } = RestaurantStatus.Closed;
+        public RestaurantStatus Status { get; set; }
         public bool IsActive { get; set; } = true;
-        public bool IsVerified { get; set; } = false;
-        public bool IsFeatured { get; set; } = false;
+        public bool IsVerified { get; set; } 
+        public bool IsFeatured { get; set; }
         public TimeOnly OpeningTime { get; set; }
         public TimeOnly ClosingTime { get; set; }
 
         // Ratings
-        public double AverageRating { get; set; } = 0.0;
-        public int TotalRatings { get; set; } = 0;
+        public double AverageRating { get; set; }
+        public int TotalRatings { get; set; }
 
         // Delivery settings
-        public decimal DeliveryFee { get; set; } = 0;
-        public decimal MinimumOrderAmount { get; set; } = 0;
-        public int EstimatedDeliveryTimeMinutes { get; set; } = 30;
-        public double DeliveryRadiusKm { get; set; } = 5.0;
+        public decimal DeliveryFee { get; set; } 
+        public decimal MinimumOrderAmount { get; set; }
+        public int EstimatedDeliveryTimeMinutes { get; set; } 
+        public double DeliveryRadiusKm { get; set; } 
 
         // Navigation
         public User? Owner { get; set; }
