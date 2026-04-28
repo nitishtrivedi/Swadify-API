@@ -32,7 +32,7 @@ namespace Swadify_API.Controllers
         public async Task<IActionResult> GetFeatured()
         {
             var result = await _service.GetFeaturedRestaurantsAsync();
-            return Ok(ApiResponse<RestaurantResponseDto>.Ok(result));
+            return Ok(ApiResponse<List<RestaurantResponseDto>>.Ok(result));
         }
 
         /// <summary>Get restaurant by ID</summary>

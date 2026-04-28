@@ -8,7 +8,7 @@ namespace Swadify_API.Interfaces
         Task<RestaurantResponseDto> CreateRestaurantAsync(int ownerId, CreateRestaurantDto dto);
         Task<RestaurantResponseDto> UpdateRestaurantAsync(int restaurantId, int requesterId, UpdateRestaurantDto dto);
         Task<RestaurantResponseDto?> GetRestaurantByIdAsync(int id);
-        Task<RestaurantResponseDto> GetFeaturedRestaurantsAsync();
+        Task<List<RestaurantResponseDto>> GetFeaturedRestaurantsAsync();
         Task<PagedResponse<RestaurantResponseDto>> GetRestaurantsAsync(int page, int pageSize, string? search, int? categoryId, bool? isOpen);
         Task<PagedResponse<RestaurantResponseDto>> GetMyRestaurantsAsync(int ownerId, int page, int pageSize);
         Task<bool> UploadLogoAsync(int restaurantId, int requesterId, IFormFile file);

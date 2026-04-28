@@ -275,16 +275,26 @@ namespace Swadify_API.Services
             });
         }
 
-        public async Task<RestaurantResponseDto> GetFeaturedRestaurantsAsync()
+        public async Task<List<RestaurantResponseDto>> GetFeaturedRestaurantsAsync()
         {
-            var restaurant = await _db.Restaurants
-                .Include(r => r.Owner)
-                .Include(r => r.Category)
-                .Where(r => r.IsFeatured && r.IsActive)
-                .OrderByDescending(r => r.AverageRating)
-                .FirstOrDefaultAsync();
-            if (restaurant == null) throw new KeyNotFoundException("No featured restaurant found.");
-            return await MapToResponseDto(restaurant, restaurant.Owner!);
+            var restaurants = await _db.Restaurants
+        .Include(r => r.Owner)
+        .Include(r => r.Category)
+        .Where(r => r.IsFeatured && r.IsActive)
+        .OrderByDescending(r => r.AverageRating)
+        .ToListAsync();
+
+            if (!restaurants.Any())
+                throw new KeyNotFoundException("No featured restaurants found.");
+
+            var result = new List<RestaurantResponseDto>();
+
+            foreach (var restaurant in restaurants)
+            {
+                result.Add(await MapToResponseDto(restaurant, restaurant.Owner!));
+            }
+
+            return result;
         }
 
         public async Task<bool> DeleteRestaurantAsync(int id)
