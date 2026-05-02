@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swadify_API.Data;
 using Swadify_API.DTOs;
+using Swadify_API.Entities;
 using Swadify_API.Helpers;
 using Swadify_API.Interfaces;
 using System.Security.Claims;
@@ -130,16 +131,30 @@ namespace Swadify_API.Controllers
             });
         }
 
-        /// <summary>Toggle user active status (SuperAdmin)</summary>
-        [HttpPatch("{id:int}/toggle-active")]
+        
+
+
+        #region SuperAdmin -only endpoints for user management
+        [HttpPost("super-admin/create-admin")]
         [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> ToggleActive(int id)
+        public async Task<IActionResult> CreateUser([FromBody] AdminCreateAdminDto dto)
         {
-            var user = await _db.Users.FindAsync(id);
-            if (user == null) return NotFound();
-            user.IsActive = !user.IsActive;
+            if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+                return BadRequest(ApiResponse<object>.Fail("Email already exists."));
+            var user = new User
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                Username = dto.Username,
+                PasswordHash = PasswordHelper.Hash(dto.Password),
+                Role = dto.Role,
+                IsActive = true
+            };
+            _db.Users.Add(user);
             await _db.SaveChangesAsync();
-            return Ok(ApiResponse<object>.Ok(new { user.IsActive }, user.IsActive ? "User activated." : "User deactivated."));
+            return Ok(ApiResponse<object>.Ok(new { user.Id }, "User created successfully."));
         }
+        #endregion
     }
 }

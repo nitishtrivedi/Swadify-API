@@ -1,5 +1,6 @@
 ﻿using Razorpay.Api;
 using Swadify_API.Enums;
+using System.Text.Json.Serialization;
 
 namespace Swadify_API.Entities
 {
@@ -42,9 +43,10 @@ namespace Swadify_API.Entities
         public decimal DeliveryFee { get; set; } 
         public decimal MinimumOrderAmount { get; set; }
         public int EstimatedDeliveryTimeMinutes { get; set; } 
-        public double DeliveryRadiusKm { get; set; } 
+        public double DeliveryRadiusKm { get; set; }
 
         // Navigation
+        [JsonIgnore]
         public User? Owner { get; set; }
         public RestaurantCategory? Category { get; set; }
         public ICollection<MenuItem>? MenuItems { get; set; }
