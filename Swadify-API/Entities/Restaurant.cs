@@ -32,6 +32,7 @@ namespace Swadify_API.Entities
         public bool IsActive { get; set; } = true;
         public bool IsVerified { get; set; } 
         public bool IsFeatured { get; set; }
+
         public TimeOnly OpeningTime { get; set; }
         public TimeOnly ClosingTime { get; set; }
 

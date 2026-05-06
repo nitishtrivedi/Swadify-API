@@ -44,7 +44,7 @@ namespace Swadify_API.Entities
 
         // Navigation
         public User? Customer { get; set; }
-        public Restaurant? Restaurant { get; set; }
+        public Restaurant Restaurant { get; set; }
         public User? DeliveryPartner { get; set; }
         public ICollection<OrderItem>? OrderItems { get; set; }
         public Payment? Payment { get; set; }

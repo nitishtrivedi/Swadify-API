@@ -54,14 +54,14 @@ namespace Swadify_API.Controllers
         }
 
         /// <summary>Get my restaurants (Admin only)</summary>
-        [HttpGet("my")]
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> GetMyRestaurants([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            var ownerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var result = await _service.GetMyRestaurantsAsync(ownerId, page, pageSize);
-            return Ok(result);
-        }
+        //[HttpGet("my")]
+        //[Authorize(Roles = "Admin,SuperAdmin")]
+        //public async Task<IActionResult> GetMyRestaurants([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        //{
+        //    var ownerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        //    var result = await _service.GetMyRestaurantsAsync(ownerId, page, pageSize);
+        //    return Ok(result);
+        //}
 
         /// <summary>Create a new restaurant</summary>
         [HttpPost]

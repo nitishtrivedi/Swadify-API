@@ -497,4 +497,44 @@ namespace Swadify_API.DTOs
         public double Longitude { get; set; }
         public DateTime LastUpdated { get; set; }
     }
+
+    public class SuperAdminStatsDto
+    {
+        public int TotalAdmins { get; set; }
+        public int ActiveAdmins { get; set; }
+        public int TotalCustomers { get; set; }
+        public int NewCustomersToday { get; set; }
+        public int TotalOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public int TotalRestaurants { get; set; }
+        public int TotalPartners { get; set; }
+    }
+
+    public class AdminDashStatsDto
+    {
+        public int TotalOrders { get; set; }
+        public int ActiveOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal TodayRevenue { get; set; }
+        public int TotalRestaurants { get; set; }
+        public int ActivePartners { get; set; }
+        public double AvgRating { get; set; }
+        public int NewCustomers { get; set; }
+        public int TodayOrders { get; set; }
+    }
+
+    public class AdminRecentOrderDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CustomerName { get; set; } = string.Empty;
+        public string RestaurantName { get; set; } = string.Empty;
+        public decimal Total { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class UpdateRestaurantStatusDto
+    {
+        public RestaurantStatus Status { get; set; }
+    }
 }

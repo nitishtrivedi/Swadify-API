@@ -4,7 +4,7 @@
     {
         public int CustomerId { get; set; }
         public int OrderId { get; set; }
-        public int? RestaurantId { get; set; }
+        public int RestaurantId { get; set; }
         public int? MenuItemId { get; set; }
 
         public int Rating { get; set; } // 1-5
