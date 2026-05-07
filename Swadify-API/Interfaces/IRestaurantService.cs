@@ -19,10 +19,10 @@ namespace Swadify_API.Interfaces
         Task<bool> DeleteRestaurantAsync(int id);
     }
 
-    public class MenuCategoryDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public int DisplayOrder { get; set; }
-    }
+    //public class MenuCategoryDto
+    //{
+    //    public int Id { get; set; }
+    //    public string Name { get; set; } = string.Empty;
+    //    public int DisplayOrder { get; set; }
+    //}
 }

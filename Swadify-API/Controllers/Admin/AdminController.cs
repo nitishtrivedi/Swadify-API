@@ -371,5 +371,276 @@ namespace Swadify_API.Controllers.Admin
 
         #endregion
 
+        #region Categories
+
+        [HttpGet("restaurants/categories")]
+        public async Task<IActionResult> GetRestaurantCategories()
+        {
+            var categories = await _context.RestaurantCategories
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.DisplayOrder)
+                .ToListAsync();
+            return Ok(categories);
+        }
+
+        [HttpGet("restaurants/{restaurantId}/menuCategories")]
+        public async Task<IActionResult> GetMenuCategories(int restaurantId)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.Id == restaurantId && r.OwnerId == adminId);
+            if (restaurant == null) return NotFound();
+
+            var categories = await _context.MenuCategories
+                .Where(c => c.RestaurantId == restaurantId && c.IsActive)
+                .OrderBy(c => c.DisplayOrder)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Name,
+                    c.Description,
+                    c.DisplayOrder,
+                    RestaurantId = c.RestaurantId,
+                    Items = c.MenuItems!
+                        .Where(i => i.IsActive)
+                        .Select(i => new
+                        {
+                            i.Id,
+                            i.RestaurantId,
+                            i.CategoryId,
+                            i.Name,
+                            i.Description,
+                            i.Price,
+                            i.IsVegetarian,
+                            i.IsVegan,
+                            i.IsGlutenFree,
+                            i.IsBestseller,
+                            i.IsSpicy,
+                            i.IsAvailable,
+                            i.PreparationTimeMinutes,
+                            i.ImageUrl,
+                            i.Tags
+                        })
+                })
+                .ToListAsync();
+
+            return Ok(categories);
+        }
+
+        [HttpPost("restaurants/{restaurantId}/menuCategories")]
+        public async Task<IActionResult> CreateMenuCategory(int restaurantId, [FromBody] MenuCategoryDto dto)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.Id == restaurantId && r.OwnerId == adminId);
+            if (restaurant == null) return NotFound();
+
+            var category = new MenuCategory
+            {
+                RestaurantId = restaurantId,
+                Name = dto.Name,
+                Description = dto.Description,
+                DisplayOrder = dto.DisplayOrder,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.MenuCategories.Add(category);
+            await _context.SaveChangesAsync();
+            return Ok(category);
+        }
+
+        [HttpPut("menuCategories/{id}")]
+        public async Task<IActionResult> UpdateMenuCategory(int id, [FromBody] MenuCategoryDto dto)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var category = await _context.MenuCategories
+                .Include(c => c.Restaurant)
+                .FirstOrDefaultAsync(c => c.Id == id && c.Restaurant!.OwnerId == adminId);
+            if (category == null) return NotFound();
+
+            category.Name = dto.Name;
+            category.Description = dto.Description;
+            category.DisplayOrder = dto.DisplayOrder;
+            category.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return Ok(category);
+        }
+
+        [HttpDelete("menuCategories/{id}")]
+        public async Task<IActionResult> DeleteMenuCategory(int id)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var category = await _context.MenuCategories
+                .Include(c => c.Restaurant)
+                .FirstOrDefaultAsync(c => c.Id == id && c.Restaurant!.OwnerId == adminId);
+            if (category == null) return NotFound();
+
+            category.IsActive = false;
+            category.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        #endregion
+
+        #region Menu Items
+
+        [HttpPost("menuItems")]
+        public async Task<IActionResult> CreateMenuItem([FromBody] AdminCreateMenuItemDto dto)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.Id == dto.RestaurantId && r.OwnerId == adminId);
+            if (restaurant == null) return NotFound();
+
+            var category = await _context.MenuCategories
+                .FirstOrDefaultAsync(c => c.Id == dto.CategoryId && c.RestaurantId == dto.RestaurantId);
+            if (category == null) return BadRequest(new { message = "Category not found for this restaurant" });
+
+            var item = new MenuItem
+            {
+                RestaurantId = dto.RestaurantId,
+                CategoryId = dto.CategoryId,
+                Name = dto.Name,
+                Description = dto.Description ?? string.Empty,
+                Price = dto.Price,
+                IsVegetarian = dto.IsVegetarian,
+                PreparationTimeMinutes = dto.PreparationTimeMinutes,
+                IsBestseller = dto.Tags?.Contains("bestseller") ?? false,
+                IsSpicy = dto.Tags?.Contains("spicy") ?? false,
+                Tags = SerializeTags(dto.Tags),  // store as string
+                IsAvailable = true,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.MenuItems.Add(item);
+            await _context.SaveChangesAsync();
+            return Ok(MapMenuItem(item));
+        }
+
+        [HttpPut("menuItems/{id}")]
+        public async Task<IActionResult> UpdateMenuItem(int id, [FromBody] AdminCreateMenuItemDto dto)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var item = await _context.MenuItems
+                .Include(i => i.Restaurant)
+                .FirstOrDefaultAsync(i => i.Id == id && i.Restaurant!.OwnerId == adminId);
+            if (item == null) return NotFound();
+
+            item.CategoryId = dto.CategoryId;
+            item.Name = dto.Name;
+            item.Description = dto.Description ?? string.Empty;
+            item.Price = dto.Price;
+            item.IsVegetarian = dto.IsVegetarian;
+            item.PreparationTimeMinutes = dto.PreparationTimeMinutes;
+            item.IsBestseller = dto.Tags?.Contains("bestseller") ?? false;
+            item.IsSpicy = dto.Tags?.Contains("spicy") ?? false;
+            item.Tags = SerializeTags(dto.Tags);  // store as string
+            item.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return Ok(MapMenuItem(item));
+        }
+
+        [HttpPatch("menuItems/{id}/toggle")]
+        public async Task<IActionResult> ToggleMenuItem(int id)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var item = await _context.MenuItems
+                .Include(i => i.Restaurant)
+                .FirstOrDefaultAsync(i => i.Id == id && i.Restaurant!.OwnerId == adminId);
+            if (item == null) return NotFound();
+
+            item.IsAvailable = !item.IsAvailable;
+            item.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return Ok(MapMenuItem(item));
+        }
+
+        [HttpDelete("menuItems/{id}")]
+        public async Task<IActionResult> DeleteMenuItem(int id)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var item = await _context.MenuItems
+                .Include(i => i.Restaurant)
+                .FirstOrDefaultAsync(i => i.Id == id && i.Restaurant!.OwnerId == adminId);
+            if (item == null) return NotFound();
+
+            item.IsActive = false;
+            item.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPost("menuItems/{id}/image")]
+        public async Task<IActionResult> UploadMenuItemImage(int id, [FromForm] IFormFile image)
+        {
+            var adminId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var item = await _context.MenuItems
+                .Include(i => i.Restaurant)
+                .FirstOrDefaultAsync(i => i.Id == id && i.Restaurant!.OwnerId == adminId);
+            if (item == null) return NotFound();
+
+            var url = await _cloudinaryService.UploadImageAsync(image, "menu-items");
+            if (url == null) return StatusCode(500, new { message = "Image upload failed" });
+
+            item.ImageUrl = url;
+            item.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return Ok(new { url });
+        }
+
+        private static object MapMenuItem(MenuItem i) => new
+        {
+            i.Id,
+            i.RestaurantId,
+            i.CategoryId,
+            i.Name,
+            i.Description,
+            i.Price,
+            i.ImageUrl,
+            i.IsAvailable,
+            i.IsVegetarian,
+            i.PreparationTimeMinutes,
+            i.IsBestseller,
+            i.IsSpicy,
+            Tags = BuildTags(i)
+        };
+
+        private static List<string> BuildTags(MenuItem i)
+        {
+            var tags = string.IsNullOrWhiteSpace(i.Tags)
+                ? new List<string>()
+                : i.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                       .Select(t => t.Trim())
+                       .ToList();
+
+            // Also add boolean-based tags if not already present
+            if (i.IsBestseller && !tags.Contains("bestseller")) tags.Add("bestseller");
+            if (i.IsSpicy && !tags.Contains("spicy")) tags.Add("spicy");
+
+            return tags;
+        }
+
+        // Convert tags list to comma-separated string for storage
+        private static string SerializeTags(List<string>? tags)
+        {
+            if (tags == null || tags.Count == 0) return "";
+            return string.Join(",", tags.Select(t => t.Trim().ToLower()));
+        }
+
+        #endregion
+
     }
 }

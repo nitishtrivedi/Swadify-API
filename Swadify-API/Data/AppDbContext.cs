@@ -62,7 +62,7 @@ namespace Swadify_API.Data
                 e.HasOne(m => m.Category)
                  .WithMany(c => c.MenuItems)
                  .HasForeignKey(m => m.CategoryId)
-                 .OnDelete(DeleteBehavior.Restrict);
+                 .OnDelete(DeleteBehavior.Cascade);
 
                 e.Property(m => m.Price).HasColumnType("decimal(18,2)");
                 e.Property(m => m.DiscountedPrice).HasColumnType("decimal(18,2)");
@@ -219,17 +219,17 @@ namespace Swadify_API.Data
             );
 
             // Seed Menu Categories
-            modelBuilder.Entity<MenuCategory>().HasData(
-                new MenuCategory { Id = 1, Name = "Starters", DisplayOrder = 1 },
-                new MenuCategory { Id = 2, Name = "Main Course", DisplayOrder = 2 },
-                new MenuCategory { Id = 3, Name = "Rice & Biryani", DisplayOrder = 3 },
-                new MenuCategory { Id = 4, Name = "Breads", DisplayOrder = 4 },
-                new MenuCategory { Id = 5, Name = "Soups & Salads", DisplayOrder = 5 },
-                new MenuCategory { Id = 6, Name = "Desserts", DisplayOrder = 6 },
-                new MenuCategory { Id = 7, Name = "Beverages", DisplayOrder = 7 },
-                new MenuCategory { Id = 8, Name = "Fast Food", DisplayOrder = 8 },
-                new MenuCategory { Id = 9, Name = "Combo Meals", DisplayOrder = 9 }
-            );
+            //modelBuilder.Entity<MenuCategory>().HasData(
+            //    new MenuCategory { Id = 1, Name = "Starters", DisplayOrder = 1 },
+            //    new MenuCategory { Id = 2, Name = "Main Course", DisplayOrder = 2 },
+            //    new MenuCategory { Id = 3, Name = "Rice & Biryani", DisplayOrder = 3 },
+            //    new MenuCategory { Id = 4, Name = "Breads", DisplayOrder = 4 },
+            //    new MenuCategory { Id = 5, Name = "Soups & Salads", DisplayOrder = 5 },
+            //    new MenuCategory { Id = 6, Name = "Desserts", DisplayOrder = 6 },
+            //    new MenuCategory { Id = 7, Name = "Beverages", DisplayOrder = 7 },
+            //    new MenuCategory { Id = 8, Name = "Fast Food", DisplayOrder = 8 },
+            //    new MenuCategory { Id = 9, Name = "Combo Meals", DisplayOrder = 9 }
+            //);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

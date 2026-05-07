@@ -537,4 +537,25 @@ namespace Swadify_API.DTOs
     {
         public RestaurantStatus Status { get; set; }
     }
+
+    public class MenuCategoryDto
+    {
+        [Required] public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public int DisplayOrder { get; set; } = 0;
+    }
+
+    public class AdminCreateMenuItemDto
+    {
+        [Required] public int RestaurantId { get; set; }
+        [Required] public int CategoryId { get; set; }
+        [Required] public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        [Required] public decimal Price { get; set; }
+        public bool IsVegetarian { get; set; }
+        public int PreparationTimeMinutes { get; set; } = 15;
+        public bool IsBestseller { get; set; }
+        public bool IsSpicy { get; set; }
+        public List<string>? Tags { get; set; }
+    }
 }

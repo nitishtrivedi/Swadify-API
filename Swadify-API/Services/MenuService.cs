@@ -141,7 +141,8 @@ namespace Swadify_API.Services
             return await _db.MenuCategories
                 .Where(c => c.IsActive)
                 .OrderBy(c => c.DisplayOrder)
-                .Select(c => new MenuCategoryDto { Id = c.Id, Name = c.Name, DisplayOrder = c.DisplayOrder })
+                //.Select(c => new MenuCategoryDto { Id = c.Id, Name = c.Name, DisplayOrder = c.DisplayOrder })
+                .Select(c => new MenuCategoryDto { Name = c.Name, DisplayOrder = c.DisplayOrder })
                 .ToListAsync();
         }
 

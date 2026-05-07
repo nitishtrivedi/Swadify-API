@@ -18,10 +18,13 @@
         public bool IsGlutenFree { get; set; } = false;
         public bool IsBestseller { get; set; } = false;
         public bool IsSpicy { get; set; } = false;
+        public bool IsActive { get; set; }
 
         public int PreparationTimeMinutes { get; set; } = 15;
         public double AverageRating { get; set; } = 0.0;
         public int TotalRatings { get; set; } = 0;
+
+        public string Tags { get; set; } = string.Empty; // Comma-separated tags for search/filtering
 
         // Nutritional info (optional)
         public int? CaloriesKcal { get; set; }
