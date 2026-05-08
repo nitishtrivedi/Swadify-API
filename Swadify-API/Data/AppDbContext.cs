@@ -29,7 +29,7 @@ namespace Swadify_API.Data
             {
                 e.HasIndex(u => u.Email).IsUnique();
                 e.HasIndex(u => u.Username).IsUnique();
-                e.HasIndex(u => u.PhoneNumber).IsUnique();
+                e.HasIndex(u => u.PhoneNumber).IsUnique().HasFilter("\"PhoneNumber\" IS NOT NULL");
                 e.Property(u => u.Role).HasConversion<int>();
             });
 

@@ -92,7 +92,7 @@ namespace Swadify_API.Services
             order.RazorpayPaymentId = dto.RazorpayPaymentId;
             order.RazorpaySignature = dto.RazorpaySignature;
             order.PaymentStatus = PaymentStatus.Completed;
-            order.Status = OrderStatus.Confirmed;
+            order.Status = OrderStatus.Accepted;
 
             if (order.Payment != null)
             {

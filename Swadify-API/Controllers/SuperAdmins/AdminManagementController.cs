@@ -71,6 +71,7 @@ namespace Swadify_API.Controllers.SuperAdmins
                 LastName = dto.LastName,
                 Email = dto.Email,
                 Username = dto.Username,
+                PhoneNumber = dto.PhoneNumber,
                 PasswordHash = PasswordHelper.Hash(dto.Password),
                 Role = dto.Role,
                 IsActive = true

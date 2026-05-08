@@ -234,6 +234,7 @@ namespace Swadify_API.DTOs
     {
         [Required] public int RestaurantId { get; set; }
         [Required] public PaymentMethod PaymentMethod { get; set; }
+        [Required] public List<OrderItemDto> Items { get; set; } = new();
         [Required] public string DeliveryAddressLine1 { get; set; } = string.Empty;
         public string? DeliveryAddressLine2 { get; set; }
         [Required] public string DeliveryCity { get; set; } = string.Empty;
@@ -242,6 +243,12 @@ namespace Swadify_API.DTOs
         public double DeliveryLatitude { get; set; }
         public double DeliveryLongitude { get; set; }
         public string? SpecialInstructions { get; set; }
+    }
+
+    public class OrderItemDto
+    {
+        [Required] public int MenuItemId { get; set; }
+        [Required] public int Quantity { get; set; }
     }
 
     public class UpdateOrderStatusDto
@@ -466,7 +473,7 @@ namespace Swadify_API.DTOs
         public string LastName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; } 
         public string Password { get; set; } = string.Empty;
         public UserRole Role { get; set; } = UserRole.Admin;
     }

@@ -45,8 +45,8 @@ namespace Swadify_API.Controllers.Admin
             var totalOrders = await orders.CountAsync();
 
             var activeOrders = await orders.CountAsync(o =>
-                o.Status == Enums.OrderStatus.Pending ||
-                o.Status == Enums.OrderStatus.Confirmed ||
+                o.Status == Enums.OrderStatus.Received ||
+                o.Status == Enums.OrderStatus.Accepted ||
                 o.Status == Enums.OrderStatus.Preparing ||
                 o.Status == Enums.OrderStatus.OutForDelivery
             );

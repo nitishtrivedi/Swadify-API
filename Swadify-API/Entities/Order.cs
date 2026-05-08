@@ -11,7 +11,7 @@ namespace Swadify_API.Entities
 
         public string OrderNumber { get; set; } = string.Empty; // e.g. FD-20240101-0001
         public string UniqueDeliveryCode { get; set; } = string.Empty; // 4-digit
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        public OrderStatus Status { get; set; } = OrderStatus.Received;
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
         public PaymentMethod PaymentMethod { get; set; }
 
@@ -46,7 +46,7 @@ namespace Swadify_API.Entities
         public User? Customer { get; set; }
         public Restaurant Restaurant { get; set; }
         public User? DeliveryPartner { get; set; }
-        public ICollection<OrderItem>? OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; } = new List<OrderItem>();
         public Payment? Payment { get; set; }
         public Review? Review { get; set; }
     }

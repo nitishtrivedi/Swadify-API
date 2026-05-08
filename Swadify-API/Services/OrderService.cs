@@ -23,32 +23,131 @@ namespace Swadify_API.Services
 
         public async Task<OrderResponseDto> CreateOrderAsync(int customerId, CreateOrderDto dto)
         {
-            var cart = await _db.Carts
-                .Include(c => c.CartItems!).ThenInclude(ci => ci.MenuItem)
-                .FirstOrDefaultAsync(c => c.CustomerId == customerId)
-                ?? throw new InvalidOperationException("Cart is empty.");
+            //var cart = await _db.Carts
+            //    .Include(c => c.CartItems!).ThenInclude(ci => ci.MenuItem)
+            //    .FirstOrDefaultAsync(c => c.CustomerId == customerId)
+            //    ?? throw new InvalidOperationException("Cart is empty.");
 
-            if (!cart.CartItems!.Any())
-                throw new InvalidOperationException("Cart is empty.");
+            //if (!cart.CartItems!.Any())
+            //    throw new InvalidOperationException("Cart is empty.");
 
+            //var restaurant = await _db.Restaurants.FindAsync(dto.RestaurantId)
+            //    ?? throw new KeyNotFoundException("Restaurant not found.");
+
+            //if (restaurant.Status != RestaurantStatus.Open)
+            //    throw new InvalidOperationException("Restaurant is currently closed.");
+
+            //// Validate cart belongs to this restaurant
+            //if (cart.RestaurantId != dto.RestaurantId)
+            //    throw new InvalidOperationException("Cart items are from a different restaurant.");
+
+            //decimal subTotal = cart.CartItems!.Sum(ci => ci.UnitPrice * ci.Quantity);
+
+            //if (subTotal < restaurant.MinimumOrderAmount)
+            //    throw new InvalidOperationException($"Minimum order amount is ₹{restaurant.MinimumOrderAmount}.");
+
+            //decimal taxAmount = Math.Round(subTotal * 0.05m, 2); // 5% tax
+            //decimal totalAmount = subTotal + restaurant.DeliveryFee + taxAmount;
+
+
+            //var order = new Order
+            //{
+            //    CustomerId = customerId,
+            //    RestaurantId = dto.RestaurantId,
+            //    OrderNumber = OrderNumberHelper.Generate(),
+            //    UniqueDeliveryCode = OrderNumberHelper.GenerateDeliveryCode(),
+            //    Status = OrderStatus.Received,
+            //    PaymentStatus = PaymentStatus.Pending,
+            //    PaymentMethod = dto.PaymentMethod,
+            //    SubTotal = subTotal,
+            //    DeliveryFee = restaurant.DeliveryFee,
+            //    TaxAmount = taxAmount,
+            //    TotalAmount = totalAmount,
+            //    DeliveryAddressLine1 = dto.DeliveryAddressLine1,
+            //    DeliveryAddressLine2 = dto.DeliveryAddressLine2,
+            //    DeliveryCity = dto.DeliveryCity,
+            //    DeliveryState = dto.DeliveryState,
+            //    DeliveryPinCode = dto.DeliveryPinCode,
+            //    DeliveryLatitude = dto.DeliveryLatitude,
+            //    DeliveryLongitude = dto.DeliveryLongitude,
+            //    SpecialInstructions = dto.SpecialInstructions,
+            //    EstimatedDeliveryTime = DateTime.UtcNow.AddMinutes(restaurant.EstimatedDeliveryTimeMinutes)
+            //};
+
+            //_db.Orders.Add(order);
+
+            //foreach (var cartItem in cart.CartItems!)
+            //{
+            //    _db.OrderItems.Add(new OrderItem
+            //    {
+            //        OrderId = order.Id,
+            //        MenuItemId = cartItem.MenuItemId,
+            //        ItemName = cartItem.MenuItem!.Name,
+            //        ItemDescription = cartItem.MenuItem.Description,
+            //        Quantity = cartItem.Quantity,
+            //        UnitPrice = cartItem.UnitPrice,
+            //        TotalPrice = cartItem.UnitPrice * cartItem.Quantity,
+            //        SpecialInstructions = cartItem.SpecialInstructions
+            //    });
+            //}
+
+            //// Create payment record
+            //_db.Payments.Add(new Payment
+            //{
+            //    OrderId = order.Id,
+            //    Amount = totalAmount,
+            //    Method = dto.PaymentMethod,
+            //    Status = PaymentStatus.Pending
+            //});
+
+            //// Clear cart
+            //_db.Carts.Remove(cart);
+
+            //await _db.SaveChangesAsync();
+
+            //// Notify restaurant owner
+            //await _notifications.SendNotificationAsync(
+            //    restaurant.OwnerId,
+            //    "New Order Received!",
+            //    $"Order #{order.OrderNumber} for ₹{totalAmount} has been placed.",
+            //    NotificationType.NewOrderAlert,
+            //    order.Id);
+
+            //// Notify customer
+            //await _notifications.SendNotificationAsync(
+            //    customerId,
+            //    "Order Placed Successfully!",
+            //    $"Your order #{order.OrderNumber} has been placed.",
+            //    NotificationType.OrderPlaced,
+            //    order.Id);
+
+            //_logger.LogInformation("Order created: {OrderNumber}", order.OrderNumber);
+            //return await GetOrderByIdAsync(order.Id, customerId, UserRole.Customer) ?? throw new Exception("Failed to retrieve order.");
             var restaurant = await _db.Restaurants.FindAsync(dto.RestaurantId)
-                ?? throw new KeyNotFoundException("Restaurant not found.");
+        ?? throw new KeyNotFoundException("Restaurant not found.");
 
             if (restaurant.Status != RestaurantStatus.Open)
                 throw new InvalidOperationException("Restaurant is currently closed.");
 
-            // Validate cart belongs to this restaurant
-            if (cart.RestaurantId != dto.RestaurantId)
-                throw new InvalidOperationException("Cart items are from a different restaurant.");
+            if (!dto.Items.Any())
+                throw new InvalidOperationException("Order must have at least one item.");
 
-            decimal subTotal = cart.CartItems!.Sum(ci => ci.UnitPrice * ci.Quantity);
+            // Fetch menu items from DB to get current prices
+            var menuItemIds = dto.Items.Select(i => i.MenuItemId).ToList();
+            var menuItems = await _db.MenuItems
+                .Where(m => menuItemIds.Contains(m.Id) && m.RestaurantId == dto.RestaurantId)
+                .ToDictionaryAsync(m => m.Id);
+
+            if (menuItems.Count != menuItemIds.Count)
+                throw new InvalidOperationException("One or more items are invalid or not from this restaurant.");
+
+            decimal subTotal = dto.Items.Sum(i => menuItems[i.MenuItemId].Price * i.Quantity);
 
             if (subTotal < restaurant.MinimumOrderAmount)
                 throw new InvalidOperationException($"Minimum order amount is ₹{restaurant.MinimumOrderAmount}.");
 
-            decimal taxAmount = Math.Round(subTotal * 0.05m, 2); // 5% tax
+            decimal taxAmount = Math.Round(subTotal * 0.05m, 2);
             decimal totalAmount = subTotal + restaurant.DeliveryFee + taxAmount;
-
 
             var order = new Order
             {
@@ -56,7 +155,7 @@ namespace Swadify_API.Services
                 RestaurantId = dto.RestaurantId,
                 OrderNumber = OrderNumberHelper.Generate(),
                 UniqueDeliveryCode = OrderNumberHelper.GenerateDeliveryCode(),
-                Status = OrderStatus.Pending,
+                Status = OrderStatus.Received,
                 PaymentStatus = PaymentStatus.Pending,
                 PaymentMethod = dto.PaymentMethod,
                 SubTotal = subTotal,
@@ -74,38 +173,51 @@ namespace Swadify_API.Services
                 EstimatedDeliveryTime = DateTime.UtcNow.AddMinutes(restaurant.EstimatedDeliveryTimeMinutes)
             };
 
-            _db.Orders.Add(order);
+            
 
-            foreach (var cartItem in cart.CartItems!)
+            foreach (var item in dto.Items)
             {
-                _db.OrderItems.Add(new OrderItem
+                var menuItem = menuItems[item.MenuItemId];
+                //_db.OrderItems.Add(new OrderItem
+                //{
+                //    //OrderId = order.Id,
+                //    MenuItemId = item.MenuItemId,
+                //    ItemName = menuItem.Name,
+                //    ItemDescription = menuItem.Description,
+                //    Quantity = item.Quantity,
+                //    UnitPrice = menuItem.Price,
+                //    TotalPrice = menuItem.Price * item.Quantity,
+                //});
+                order.OrderItems!.Add(new OrderItem
                 {
-                    OrderId = order.Id,
-                    MenuItemId = cartItem.MenuItemId,
-                    ItemName = cartItem.MenuItem!.Name,
-                    ItemDescription = cartItem.MenuItem.Description,
-                    Quantity = cartItem.Quantity,
-                    UnitPrice = cartItem.UnitPrice,
-                    TotalPrice = cartItem.UnitPrice * cartItem.Quantity,
-                    SpecialInstructions = cartItem.SpecialInstructions
+                    MenuItemId = item.MenuItemId,
+                    ItemName = menuItem.Name,
+                    ItemDescription = menuItem.Description,
+                    Quantity = item.Quantity,
+                    UnitPrice = menuItem.Price,
+                    TotalPrice = menuItem.Price * item.Quantity,
                 });
             }
 
-            // Create payment record
-            _db.Payments.Add(new Payment
+            //_db.Payments.Add(new Payment
+            //{
+            //    OrderId = order.Id,
+            //    Amount = totalAmount,
+            //    Method = dto.PaymentMethod,
+            //    Status = PaymentStatus.Pending
+            //});
+
+            order.Payment = new Payment
             {
-                OrderId = order.Id,
                 Amount = totalAmount,
                 Method = dto.PaymentMethod,
                 Status = PaymentStatus.Pending
-            });
+            };
 
-            // Clear cart
-            _db.Carts.Remove(cart);
+            _db.Orders.Add(order);
 
             await _db.SaveChangesAsync();
 
-            // Notify restaurant owner
             await _notifications.SendNotificationAsync(
                 restaurant.OwnerId,
                 "New Order Received!",
@@ -113,7 +225,6 @@ namespace Swadify_API.Services
                 NotificationType.NewOrderAlert,
                 order.Id);
 
-            // Notify customer
             await _notifications.SendNotificationAsync(
                 customerId,
                 "Order Placed Successfully!",
@@ -122,7 +233,8 @@ namespace Swadify_API.Services
                 order.Id);
 
             _logger.LogInformation("Order created: {OrderNumber}", order.OrderNumber);
-            return await GetOrderByIdAsync(order.Id, customerId, UserRole.Customer) ?? throw new Exception("Failed to retrieve order.");
+            return await GetOrderByIdAsync(order.Id, customerId, UserRole.Customer)
+                ?? throw new Exception("Failed to retrieve order.");
         }
 
         public async Task<OrderResponseDto?> GetOrderByIdAsync(int orderId, int requesterId, UserRole requesterRole)
@@ -258,7 +370,7 @@ namespace Swadify_API.Services
             // Notify customer
             var notifType = dto.Status switch
             {
-                OrderStatus.Confirmed => NotificationType.OrderConfirmed,
+                OrderStatus.Accepted => NotificationType.OrderConfirmed,
                 OrderStatus.Preparing => NotificationType.OrderPreparing,
                 OrderStatus.OutForDelivery => NotificationType.OrderOutForDelivery,
                 OrderStatus.Delivered => NotificationType.OrderDelivered,

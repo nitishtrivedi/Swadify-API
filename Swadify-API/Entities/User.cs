@@ -10,7 +10,7 @@ namespace Swadify_API.Entities
         public string LastName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
         public string PasswordHash { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public bool IsActive { get; set; } = true;
