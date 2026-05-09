@@ -156,7 +156,7 @@ namespace Swadify_API.Services
                 OrderNumber = OrderNumberHelper.Generate(),
                 UniqueDeliveryCode = OrderNumberHelper.GenerateDeliveryCode(),
                 Status = OrderStatus.Received,
-                PaymentStatus = PaymentStatus.Pending,
+                PaymentStatus = dto.PaymentMethod == PaymentMethod.COD ? PaymentStatus.Pending : PaymentStatus.Completed,
                 PaymentMethod = dto.PaymentMethod,
                 SubTotal = subTotal,
                 DeliveryFee = restaurant.DeliveryFee,
@@ -170,7 +170,10 @@ namespace Swadify_API.Services
                 DeliveryLatitude = dto.DeliveryLatitude,
                 DeliveryLongitude = dto.DeliveryLongitude,
                 SpecialInstructions = dto.SpecialInstructions,
-                EstimatedDeliveryTime = DateTime.UtcNow.AddMinutes(restaurant.EstimatedDeliveryTimeMinutes)
+                EstimatedDeliveryTime = DateTime.UtcNow.AddMinutes(restaurant.EstimatedDeliveryTimeMinutes),
+                RazorpayOrderId = dto.RazorpayOrderId,
+                RazorpayPaymentId = dto.RazorpayPaymentId,
+                RazorpaySignature = dto.RazorpaySignature,
             };
 
             

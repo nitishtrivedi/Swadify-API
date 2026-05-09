@@ -26,89 +26,137 @@ namespace Swadify_API.Services
 
         public async Task<PaymentResponseDto> InitiatePaymentAsync(int userId, InitiatePaymentDto dto)
         {
-            var order = await _db.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(o => o.Id == dto.OrderId && o.CustomerId == userId)
-                ?? throw new KeyNotFoundException("Order not found.");
+            //var order = await _db.Orders
+            //    .Include(o => o.Customer)
+            //    .FirstOrDefaultAsync(o => o.Id == dto.OrderId && o.CustomerId == userId)
+            //    ?? throw new KeyNotFoundException("Order not found.");
 
-            if (order.PaymentMethod == PaymentMethod.COD)
-                throw new InvalidOperationException("COD orders don't require online payment initiation.");
+            //if (order.PaymentMethod == PaymentMethod.COD)
+            //    throw new InvalidOperationException("COD orders don't require online payment initiation.");
 
-            if (order.PaymentStatus == PaymentStatus.Completed)
-                throw new InvalidOperationException("Order is already paid.");
+            //if (order.PaymentStatus == PaymentStatus.Completed)
+            //    throw new InvalidOperationException("Order is already paid.");
 
-            var client = new RazorpayClient(_config["Razorpay:KeyId"], _config["Razorpay:KeySecret"]);
+            //var client = new RazorpayClient(_config["Razorpay:KeyId"], _config["Razorpay:KeySecret"]);
 
-            var options = new Dictionary<string, object>
-        {
-            { "amount", (int)(order.TotalAmount * 100) }, // paise
-            { "currency", "INR" },
-            { "receipt", order.OrderNumber },
-            { "notes", new Dictionary<string, string> { { "orderId", order.Id.ToString() } } }
-        };
+            //    var options = new Dictionary<string, object>
+            //{
+            //    { "amount", (int)(order.TotalAmount * 100) }, // paise
+            //    { "currency", "INR" },
+            //    { "receipt", order.OrderNumber },
+            //    { "notes", new Dictionary<string, string> { { "orderId", order.Id.ToString() } } }
+            //};
 
-            var razorpayOrder = client.Order.Create(options);
-            var razorpayOrderId = razorpayOrder["id"].ToString();
+            //    var razorpayOrder = client.Order.Create(options);
+            //    var razorpayOrderId = razorpayOrder["id"].ToString();
 
-            order.RazorpayOrderId = razorpayOrderId;
-            await _db.SaveChangesAsync();
+            //    order.RazorpayOrderId = razorpayOrderId;
+            //    await _db.SaveChangesAsync();
 
-            _logger.LogInformation("Payment initiated for order {OrderNumber}", order.OrderNumber);
+            //    _logger.LogInformation("Payment initiated for order {OrderNumber}", order.OrderNumber);
 
-            return new PaymentResponseDto
+            //    return new PaymentResponseDto
+            //    {
+            //        Success = true,
+            //        RazorpayOrderId = razorpayOrderId,
+            //        Amount = order.TotalAmount,
+            //        Currency = "INR",
+            //        RazorpayKeyId = _config["Razorpay:KeyId"],
+            //        OrderNumber = order.OrderNumber,
+            //        CustomerName = $"{order.Customer!.FirstName} {order.Customer.LastName}",
+            //        CustomerEmail = order.Customer.Email,
+            //        CustomerPhone = order.Customer.PhoneNumber
+            //    };
+            _logger.LogInformation("Key: {Key}", _config["Razorpay:Key"]);
+            _logger.LogInformation("Secret: {Secret}", _config["Razorpay:Secret"]);
+
+            var client = new RazorpayClient(_config["Razorpay:Key"], _config["Razorpay:Secret"]);
+            Dictionary<string, object> options = new()
             {
-                Success = true,
-                RazorpayOrderId = razorpayOrderId,
-                Amount = order.TotalAmount,
-                Currency = "INR",
-                RazorpayKeyId = _config["Razorpay:KeyId"],
-                OrderNumber = order.OrderNumber,
-                CustomerName = $"{order.Customer!.FirstName} {order.Customer.LastName}",
-                CustomerEmail = order.Customer.Email,
-                CustomerPhone = order.Customer.PhoneNumber
+                { "amount", Convert.ToInt32(dto.Amount * 100) },
+                { "currency", dto.Currency },
+                { "receipt", $"rcpt_{Guid.NewGuid().ToString("N")[..8]}" },
+                { "payment_capture", 1 }
             };
+
+            Razorpay.Api.Order order = client.Order.Create(options);
+
+            return await Task.FromResult(new PaymentResponseDto
+            {
+                RazorpayOrderId = order["id"].ToString(),
+                Amount = dto.Amount,
+                Currency = dto.Currency
+            });
         }
 
         public async Task<bool> VerifyPaymentAsync(VerifyPaymentDto dto)
         {
-            var order = await _db.Orders
-                .Include(o => o.Payment)
-                .FirstOrDefaultAsync(o => o.Id == dto.OrderId)
-                ?? throw new KeyNotFoundException("Order not found.");
+            //var order = await _db.Orders
+            //    .Include(o => o.Payment)
+            //    .FirstOrDefaultAsync(o => o.Id == dto.OrderId)
+            //    ?? throw new KeyNotFoundException("Order not found.");
 
-            // Verify signature
-            var text = $"{dto.RazorpayOrderId}|{dto.RazorpayPaymentId}";
-            var secret = _config["Razorpay:KeySecret"]!;
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-            var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(text));
-            var computedSignature = Convert.ToHexString(hash).ToLower();
+            //// Verify signature
+            //var text = $"{dto.RazorpayOrderId}|{dto.RazorpayPaymentId}";
+            //var secret = _config["Razorpay:KeySecret"]!;
+            //using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+            //var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(text));
+            //var computedSignature = Convert.ToHexString(hash).ToLower();
 
-            if (computedSignature != dto.RazorpaySignature)
+            //if (computedSignature != dto.RazorpaySignature)
+            //{
+            //    _logger.LogWarning("Payment signature verification failed for order {OrderId}", dto.OrderId);
+            //    return false;
+            //}
+
+            //order.RazorpayPaymentId = dto.RazorpayPaymentId;
+            //order.RazorpaySignature = dto.RazorpaySignature;
+            //order.PaymentStatus = PaymentStatus.Completed;
+            //order.Status = OrderStatus.Accepted;
+
+            //if (order.Payment != null)
+            //{
+            //    order.Payment.Status = PaymentStatus.Completed;
+            //    order.Payment.RazorpayPaymentId = dto.RazorpayPaymentId;
+            //    order.Payment.RazorpaySignature = dto.RazorpaySignature;
+            //    order.Payment.PaidAt = DateTime.UtcNow;
+            //}
+
+            //await _db.SaveChangesAsync();
+
+            //await _notifications.SendNotificationAsync(order.CustomerId, "Payment Successful!",
+            //    $"Payment for order #{order.OrderNumber} confirmed.", NotificationType.PaymentSuccessful, order.Id);
+
+            //_logger.LogInformation("Payment verified for order {OrderNumber}", order.OrderNumber);
+            //return true;
+
+            try
             {
-                _logger.LogWarning("Payment signature verification failed for order {OrderId}", dto.OrderId);
+                string payload =
+                    $"{dto.RazorpayOrderId}|{dto.RazorpayPaymentId}";
+
+                string secret = _config["Razorpay:Secret"]!;
+
+                using var hmac = new System.Security.Cryptography.HMACSHA256(
+                    System.Text.Encoding.UTF8.GetBytes(secret));
+
+                byte[] hash = hmac.ComputeHash(
+                    System.Text.Encoding.UTF8.GetBytes(payload));
+
+                string generatedSignature =
+                    BitConverter.ToString(hash)
+                        .Replace("-", "")
+                        .ToLower();
+
+                bool isValid =
+                    generatedSignature == dto.RazorpaySignature;
+
+                return await Task.FromResult(isValid);
+            }
+            catch
+            {
                 return false;
             }
-
-            order.RazorpayPaymentId = dto.RazorpayPaymentId;
-            order.RazorpaySignature = dto.RazorpaySignature;
-            order.PaymentStatus = PaymentStatus.Completed;
-            order.Status = OrderStatus.Accepted;
-
-            if (order.Payment != null)
-            {
-                order.Payment.Status = PaymentStatus.Completed;
-                order.Payment.RazorpayPaymentId = dto.RazorpayPaymentId;
-                order.Payment.RazorpaySignature = dto.RazorpaySignature;
-                order.Payment.PaidAt = DateTime.UtcNow;
-            }
-
-            await _db.SaveChangesAsync();
-
-            await _notifications.SendNotificationAsync(order.CustomerId, "Payment Successful!",
-                $"Payment for order #{order.OrderNumber} confirmed.", NotificationType.PaymentSuccessful, order.Id);
-
-            _logger.LogInformation("Payment verified for order {OrderNumber}", order.OrderNumber);
-            return true;
         }
 
         public async Task<bool> HandleWebhookAsync(string payload, string signature)

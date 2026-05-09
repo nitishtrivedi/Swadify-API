@@ -186,19 +186,19 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<DeliveryHub>("/hubs/delivery");
 
 // ─── Database Migration on Startup ───────────────────────────────────────────
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    try
-    {
-        db.Database.Migrate();
-        Log.Information("Database migration applied successfully.");
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, "Database migration failed.");
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//    try
+//    {
+//        db.Database.Migrate();
+//        Log.Information("Database migration applied successfully.");
+//    }
+//    catch (Exception ex)
+//    {
+//        Log.Error(ex, "Database migration failed.");
+//    }
+//}
 
 Log.Information("Food Delivery API started successfully.");
 app.Run();

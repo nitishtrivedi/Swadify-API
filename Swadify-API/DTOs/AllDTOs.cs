@@ -243,6 +243,9 @@ namespace Swadify_API.DTOs
         public double DeliveryLatitude { get; set; }
         public double DeliveryLongitude { get; set; }
         public string? SpecialInstructions { get; set; }
+        public string? RazorpayOrderId { get; set; }
+        public string? RazorpayPaymentId { get; set; }
+        public string? RazorpaySignature { get; set; }
     }
 
     public class OrderItemDto
@@ -341,7 +344,10 @@ namespace Swadify_API.DTOs
     #region Payment DTOs
     public class InitiatePaymentDto
     {
-        [Required] public int OrderId { get; set; }
+        //[Required] public int OrderId { get; set; }
+        public decimal Amount { get; set; }
+
+        public string Currency { get; set; } = "INR";
     }
 
     public class VerifyPaymentDto
@@ -349,7 +355,7 @@ namespace Swadify_API.DTOs
         [Required] public string RazorpayOrderId { get; set; } = string.Empty;
         [Required] public string RazorpayPaymentId { get; set; } = string.Empty;
         [Required] public string RazorpaySignature { get; set; } = string.Empty;
-        [Required] public int OrderId { get; set; }
+        //[Required] public int OrderId { get; set; }
     }
 
     public class PaymentResponseDto
