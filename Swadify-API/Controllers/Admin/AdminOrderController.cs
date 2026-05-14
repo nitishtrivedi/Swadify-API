@@ -121,7 +121,7 @@ namespace Swadify_API.Controllers.Admin
                 $"Your order #{order.OrderNumber} status has been updated.",
                 notificationType,
                 order.Id);
-            return Ok(new { message = "Order status updated successfully" });
+            return Ok(new { message = "Order status updated successfully", status = order.Status });
         }
     }
 }

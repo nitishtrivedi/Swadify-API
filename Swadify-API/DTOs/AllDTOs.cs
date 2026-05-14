@@ -599,4 +599,37 @@ namespace Swadify_API.DTOs
         public double Lat { get; set; }
         public double Lng { get; set; }
     }
+
+    public class SuperAdminCreateUserDto
+    {
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        public string? LastName { get; set; }
+
+        [Required]
+        public string Username { get; set; } = string.Empty;
+
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+
+        [Required, MinLength(6)]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        public int Role { get; set; }
+    }
+
+    public class SuperAdminUpdateUserDto
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Username { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public UserRole? Role { get; set; }
+        public bool? IsActive { get; set; }
+    }
 }
