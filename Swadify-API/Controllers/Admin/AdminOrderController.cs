@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Razorpay.Api;
 using Swadify_API.Data;
 using Swadify_API.DTOs;
+using Swadify_API.Enums;
+using Swadify_API.Interfaces;
 using System.Security.Claims;
 
 namespace Swadify_API.Controllers.Admin
@@ -10,9 +13,10 @@ namespace Swadify_API.Controllers.Admin
     [ApiController]
     [Route("api/admin/orders")]
     [Authorize(Roles = "Admin")]
-    public class AdminOrderController(AppDbContext context) : ControllerBase
+    public class AdminOrderController(AppDbContext context, INotificationService notifications) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+        private readonly INotificationService _notifications = notifications;
 
         [HttpGet("get-my-orders")]
         public async Task<IActionResult> GetMyOrders()
@@ -92,6 +96,31 @@ namespace Swadify_API.Controllers.Admin
             order.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+
+            //Notify customer about order status update
+            NotificationType notificationType = order.Status switch
+            {
+                OrderStatus.Accepted => NotificationType.OrderConfirmed,
+
+                OrderStatus.Preparing => NotificationType.OrderPreparing,
+
+                OrderStatus.ReadyForPickup => NotificationType.OrderReadyForPickup,
+
+                OrderStatus.OutForDelivery => NotificationType.OrderOutForDelivery,
+
+                OrderStatus.Delivered => NotificationType.OrderDelivered,
+
+                OrderStatus.Cancelled => NotificationType.OrderCancelled,
+
+                _ => NotificationType.General
+            };
+
+            await _notifications.SendNotificationAsync(
+                order.CustomerId,
+                "Order Status Updated!",
+                $"Your order #{order.OrderNumber} status has been updated.",
+                notificationType,
+                order.Id);
             return Ok(new { message = "Order status updated successfully" });
         }
     }

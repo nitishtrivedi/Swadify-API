@@ -13,6 +13,7 @@
         PaymentFailed = 9,
         NewOrderAlert = 10,
         DeliveryAssigned = 11,
-        General = 12
+        General = 12,
+        OrderUpdated = 13
     }
 }

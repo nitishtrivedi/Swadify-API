@@ -9,8 +9,10 @@
         {
             lock (_lock)
             {
-                _counter++;
-                return $"FD-{DateTime.UtcNow:yyyyMMdd}-{_counter:D4}";
+                //_counter++;
+                var orderNumber = $"FD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+                //return $"FD-{DateTime.UtcNow:yyyyMMdd}-{_counter:D4}";
+                return orderNumber;
             }
         }
 

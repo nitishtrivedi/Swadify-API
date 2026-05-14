@@ -571,4 +571,32 @@ namespace Swadify_API.DTOs
         public bool IsSpicy { get; set; }
         public List<string>? Tags { get; set; }
     }
+
+    /// <summary>DTO for delivery partner response matching TypeScript interface</summary>
+    public class DeliveryPartnerResponseDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public bool IsAvailable { get; set; }
+        public bool IsOnline { get; set; }
+        public double Rating { get; set; }
+        public int TotalDeliveries { get; set; }
+        public string VehicleType { get; set; } = string.Empty;
+        public string VehicleNumber { get; set; } = string.Empty;
+        public string? LicenseNumber { get; set; }
+        public LocationDto? CurrentLocation { get; set; }
+        public DateTime? LastLocationUpdate { get; set; }
+        public bool IsActive { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+    }
+
+    /// <summary>DTO for location coordinates</summary>
+    public class LocationDto
+    {
+        public double Lat { get; set; }
+        public double Lng { get; set; }
+    }
 }

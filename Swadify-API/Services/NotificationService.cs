@@ -34,14 +34,21 @@ namespace Swadify_API.Services
             await _db.SaveChangesAsync();
 
             // Send real-time via SignalR
-            await _hubContext.Clients.Group(userId.ToString()).SendAsync("ReceiveNotification", new
-            {
-                Id = notification.Id,
-                Title = title,
-                Message = message,
-                Type = type.ToString(),
-                CreatedAt = notification.CreatedAt
-            });
+            //await _hubContext.Clients.Group(userId.ToString()).SendAsync("ReceiveNotification", new
+            //{
+            //    Id = notification.Id,
+            //    Title = title,
+            //    Message = message,
+            //    Type = type.ToString(),
+            //    CreatedAt = notification.CreatedAt
+            //});
+            await _hubContext.Clients.Group(userId.ToString()).SendAsync(
+                "ReceiveNotification",
+                title,
+                message,
+                type.ToString(),
+                relatedEntityId ?? 0
+            );
         }
 
         public async Task SendToRoleAsync(UserRole role, string title, string message, NotificationType type)
