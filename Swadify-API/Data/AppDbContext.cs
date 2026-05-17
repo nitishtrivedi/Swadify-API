@@ -19,6 +19,7 @@ namespace Swadify_API.Data
         public DbSet<DeliveryPartnerProfile> DeliveryPartnerProfiles => Set<DeliveryPartnerProfile>();
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<DeliveryTracking> DeliveryTrackings => Set<DeliveryTracking>();
+        public DbSet<DeliveryPartnerEarning> DeliveryPartnerEarnings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -188,6 +189,18 @@ namespace Swadify_API.Data
                  .HasForeignKey<DeliveryPartnerProfile>(dp => dp.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<DeliveryPartnerEarning>()
+                .HasOne(e => e.DeliveryPartner)
+                .WithMany(u => u.DeliveryEarnings)
+                .HasForeignKey(e => e.DeliveryPartnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryPartnerEarning>()
+                .HasOne(e => e.Order)
+                .WithMany()
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Notification
             modelBuilder.Entity<Notification>(e =>

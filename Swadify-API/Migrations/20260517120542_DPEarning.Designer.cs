@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Swadify_API.Data;
@@ -11,9 +12,11 @@ using Swadify_API.Data;
 namespace Swadify_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517120542_DPEarning")]
+    partial class DPEarning
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,14 +57,8 @@ namespace Swadify_API.Migrations
                     b.Property<string>("LicenseNumber")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("PendingEarnings")
-                        .HasColumnType("numeric");
-
                     b.Property<int>("TotalDeliveries")
                         .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalEarnings")
-                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -76,9 +73,6 @@ namespace Swadify_API.Migrations
                     b.Property<string>("VehicleType")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal>("WithdrawnEarnings")
-                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -203,7 +197,7 @@ namespace Swadify_API.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("DeliveryPartnerEarnings");
+                    b.ToTable("DeliveryPartnerEarning");
                 });
 
             modelBuilder.Entity("Swadify_API.Entities.DeliveryTracking", b =>
@@ -773,82 +767,82 @@ namespace Swadify_API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(5299),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(6591),
                             Description = "Coffee and light bites",
                             DisplayOrder = 1,
                             IsActive = true,
                             Name = "Café",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(5303)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(6597)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6780),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8579),
                             Description = "Grills, BBQ and drinks",
                             DisplayOrder = 2,
                             IsActive = true,
                             Name = "Bar & Grill",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6780)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8580)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6782),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8584),
                             Description = "Premium restaurant experience",
                             DisplayOrder = 3,
                             IsActive = true,
                             Name = "Fine Dining",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6783)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8585)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6784),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8586),
                             Description = "Quick service restaurants",
                             DisplayOrder = 4,
                             IsActive = true,
                             Name = "Fast Food",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6784)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8587)
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6785),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8588),
                             Description = "Pizza and Italian food",
                             DisplayOrder = 5,
                             IsActive = true,
                             Name = "Pizzeria",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6786)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8588)
                         },
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6789),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8590),
                             Description = "Chinese cuisine",
                             DisplayOrder = 6,
                             IsActive = true,
                             Name = "Chinese",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6789)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8591)
                         },
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6790),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8592),
                             Description = "Indian cuisine",
                             DisplayOrder = 7,
                             IsActive = true,
                             Name = "Indian",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6791)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8593)
                         },
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6792),
+                            CreatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8594),
                             Description = "Breads, cakes and pastries",
                             DisplayOrder = 8,
                             IsActive = true,
                             Name = "Bakery",
-                            UpdatedAt = new DateTime(2026, 5, 17, 12, 16, 10, 875, DateTimeKind.Utc).AddTicks(6792)
+                            UpdatedAt = new DateTime(2026, 5, 17, 12, 5, 39, 554, DateTimeKind.Utc).AddTicks(8594)
                         });
                 });
 

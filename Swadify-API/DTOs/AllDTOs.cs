@@ -632,4 +632,5 @@ namespace Swadify_API.DTOs
         public UserRole? Role { get; set; }
         public bool? IsActive { get; set; }
     }
+    
 }

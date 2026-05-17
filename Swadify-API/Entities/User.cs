@@ -33,5 +33,6 @@ namespace Swadify_API.Entities
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Notification>? Notifications { get; set; }
         public DeliveryPartnerProfile? DeliveryProfile { get; set; }
+        public ICollection<DeliveryPartnerEarning>? DeliveryEarnings { get; set; }
     }
 }

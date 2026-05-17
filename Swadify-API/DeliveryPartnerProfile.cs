@@ -16,6 +16,10 @@ namespace Swadify_API
         public int TotalDeliveries { get; set; } = 0;
         public double AverageRating { get; set; } = 0.0;
 
+        public decimal TotalEarnings { get; set; } = 0;
+        public decimal PendingEarnings { get; set; } = 0;
+        public decimal WithdrawnEarnings { get; set; } = 0;
+
         // Navigation
         public User? User { get; set; }
     }

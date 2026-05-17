@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swadify_API.Data;
+using Swadify_API.Entities;
+using System.Security.Claims;
 
 namespace Swadify_API.Controllers.DeliveryPartner
 {
@@ -24,94 +26,53 @@ namespace Swadify_API.Controllers.DeliveryPartner
                 .Select(o => new
                 {
                     id = o.Id.ToString(),
-
                     customerId = o.CustomerId.ToString(),
-
-                    customerName =o.Customer != null ? $"{o.Customer.FirstName} {o.Customer.LastName}".Trim() : "",
-
+                    customerName = o.Customer != null ? $"{o.Customer.FirstName} {o.Customer.LastName}".Trim() : "",
                     orderNumber = o.OrderNumber,
-
                     status = o.Status.ToString(),
-
                     paymentMethod = o.PaymentMethod.ToString(),
-
                     paymentStatus = o.PaymentStatus.ToString(),
-
                     subtotal = o.SubTotal,
-
                     deliveryFee = o.DeliveryFee,
-
                     discount = o.DiscountAmount,
-
                     total = o.TotalAmount,
-
                     otp = o.UniqueDeliveryCode,
-
                     cancelReason = o.CancellationReason,
-
                     createdAt = o.CreatedAt,
-
                     updatedAt = o.UpdatedAt,
-
-                    deliveryPartnerId =
-                o.DeliveryPartnerId != null
-                    ? o.DeliveryPartnerId.ToString()
-                    : null,
-
+                    deliveryPartnerId = o.DeliveryPartnerId != null ? o.DeliveryPartnerId.ToString() : null,
                     deliveryPartnerName = "",
-
                     restaurant = new
                     {
                         id = o.Restaurant.Id.ToString(),
-
                         name = o.Restaurant.Name,
-
                         logoUrl = o.Restaurant.LogoUrl
                     },
-
                     deliveryAddress = new
                     {
                         line1 = o.DeliveryAddressLine1,
-
                         line2 = o.DeliveryAddressLine2,
-
                         city = o.DeliveryCity,
-
                         state = o.DeliveryState,
-
                         pincode = o.DeliveryPinCode,
-
                         lat = o.DeliveryLatitude,
-
                         lng = o.DeliveryLongitude
                     },
-
                     items = o.OrderItems.Select(oi => new
                     {
                         quantity = oi.Quantity,
-
                         menuItem = new
                         {
                             id = oi.MenuItem.Id.ToString(),
-
                             categoryId = oi.MenuItem.CategoryId.ToString(),
-
                             restaurantId = oi.MenuItem.RestaurantId.ToString(),
-
                             name = oi.MenuItem.Name,
-
                             description = oi.MenuItem.Description,
-
                             price = oi.UnitPrice,
-
                             imageUrl = oi.MenuItem.ImageUrl,
-
                             isVeg = oi.MenuItem.IsVegetarian,
-
                             isAvailable = oi.MenuItem.IsAvailable,
-
-                            preparationTimeMin =
-                                oi.MenuItem.PreparationTimeMinutes
+                            preparationTimeMin = oi.MenuItem.PreparationTimeMinutes
                         }
                     })
                 })
@@ -143,6 +104,76 @@ namespace Swadify_API.Controllers.DeliveryPartner
             });
         }
 
+        [HttpGet("orders/get-my-orders")]
+        public async Task<IActionResult> GetMyOrders()
+        {
+            var deliveryPartnerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var assignedOrders = await _context.Orders
+                .Include(o => o.Restaurant)
+                .Include(o => o.Customer)
+                .Include(o => o.OrderItems)!
+                    .ThenInclude(oi => oi.MenuItem)
+                .Where(o => o.DeliveryPartnerId == deliveryPartnerId)
+                .Select(o => new
+                {
+                    id = o.Id.ToString(),
+                    customerId = o.CustomerId.ToString(),
+                    customerName = o.Customer != null ? $"{o.Customer.FirstName} {o.Customer.LastName}".Trim() : "",
+                    orderNumber = o.OrderNumber,
+                    status = o.Status.ToString(),
+                    paymentMethod = o.PaymentMethod.ToString(),
+                    paymentStatus = o.PaymentStatus.ToString(),
+                    subtotal = o.SubTotal,
+                    deliveryFee = o.DeliveryFee,
+                    discount = o.DiscountAmount,
+                    total = o.TotalAmount,
+                    otp = o.UniqueDeliveryCode,
+                    cancelReason = o.CancellationReason,
+                    createdAt = o.CreatedAt,
+                    updatedAt = o.UpdatedAt,
+                    deliveryPartnerId = o.DeliveryPartnerId != null ? o.DeliveryPartnerId.ToString() : null,
+                    deliveryPartnerName = "",
+                    restaurant = new
+                    {
+                        id = o.Restaurant.Id.ToString(),
+                        name = o.Restaurant.Name,
+                        logoUrl = o.Restaurant.LogoUrl
+                    },
+                    deliveryAddress = new
+                    {
+                        line1 = o.DeliveryAddressLine1,
+                        line2 = o.DeliveryAddressLine2,
+                        city = o.DeliveryCity,
+                        state = o.DeliveryState,
+                        pincode = o.DeliveryPinCode,
+                        lat = o.DeliveryLatitude,
+                        lng = o.DeliveryLongitude
+                    },
+                    items = o.OrderItems.Select(oi => new
+                    {
+                        quantity = oi.Quantity,
+                        menuItem = new
+                        {
+                            id = oi.MenuItem.Id.ToString(),
+                            categoryId = oi.MenuItem.CategoryId.ToString(),
+                            restaurantId = oi.MenuItem.RestaurantId.ToString(),
+                            name = oi.MenuItem.Name,
+                            description = oi.MenuItem.Description,
+                            price = oi.UnitPrice,
+                            imageUrl = oi.MenuItem.ImageUrl,
+                            isVeg = oi.MenuItem.IsVegetarian,
+                            isAvailable = oi.MenuItem.IsAvailable,
+                            preparationTimeMin = oi.MenuItem.PreparationTimeMinutes
+                        }
+                    })
+                })
+                .ToListAsync();
+            return Ok(assignedOrders);
+        }
+
+
+
+
         [HttpPatch("toggle/{id}")]
         public async Task<IActionResult> ToggleAvailability(int id)
         {
@@ -169,5 +200,140 @@ namespace Swadify_API.Controllers.DeliveryPartner
                 isAvailable = deliveryPartner.DeliveryProfile.IsAvailable
             });
         }
+
+        [HttpPatch("orders/accept-order/{orderId}")]
+        public async Task<IActionResult> AcceptOrder(int orderId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found" });
+            }
+            if (order.DeliveryPartnerId != null)
+            {
+                return BadRequest(new { message = "Order already accepted by another delivery partner" });
+            }
+            var deliveryPartnerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            order.DeliveryPartnerId = deliveryPartnerId;
+            order.Status = Enums.OrderStatus.AssignedToDelivery;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Order accepted successfully" });
+        }
+
+        [HttpPatch("orders/update-status/{orderId}")]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromBody] UpdateOrderStatusDto2 dto)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return NotFound(new
+                {
+                    message = "Order not found"
+                });
+            }
+
+            var deliveryPartnerId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0"
+            );
+
+            if (order.DeliveryPartnerId != deliveryPartnerId)
+            {
+                return BadRequest(new
+                {
+                    message = "You are not assigned to this order"
+                });
+            }
+
+            // Parse enum safely
+            if (!Enum.TryParse<Enums.OrderStatus>(
+                dto.Status,
+                true,
+                out var parsedStatus))
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid order status"
+                });
+            }
+
+            // Allow only delivery partner statuses
+            var allowedStatuses = new[]
+            {
+                Enums.OrderStatus.OutForDelivery,
+                Enums.OrderStatus.Delivered,
+                Enums.OrderStatus.Cancelled,
+                Enums.OrderStatus.Failed
+            };
+
+            if (!allowedStatuses.Contains(parsedStatus))
+            {
+                return BadRequest(new
+                {
+                    message = "Status update not allowed"
+                });
+            }
+
+            order.Status = parsedStatus;
+            order.UpdatedAt = DateTime.UtcNow;
+
+            // ─────────────────────────────────────────────
+            // CREATE EARNING ONLY WHEN DELIVERED
+            // ─────────────────────────────────────────────
+
+            if (parsedStatus == Enums.OrderStatus.Delivered)
+            {
+                // Prevent duplicate earnings
+                var earningExists = await _context.DeliveryPartnerEarnings
+                    .AnyAsync(x => x.OrderId == order.Id);
+
+                if (!earningExists)
+                {
+                    // Calculate earning
+                    decimal earningAmount =
+                        Math.Round((order.TotalAmount * 0.08m) + 15m, 2);
+
+                    // Create earning entry
+                    var earning = new DeliveryPartnerEarning
+                    {
+                        DeliveryPartnerId = deliveryPartnerId,
+                        OrderId = order.Id,
+
+                        Amount = earningAmount,
+                        DeliveryFee = earningAmount,
+                        NetAmount = earningAmount,
+
+                        EarnedAt = DateTime.UtcNow
+                    };
+
+                    _context.DeliveryPartnerEarnings.Add(earning);
+
+                    // Update delivery profile
+                    var profile = await _context.DeliveryPartnerProfiles
+                        .FirstOrDefaultAsync(x => x.UserId == deliveryPartnerId);
+
+                    if (profile != null)
+                    {
+                        profile.TotalDeliveries += 1;
+                        profile.TotalEarnings += earningAmount;
+                        profile.PendingEarnings += earningAmount;
+                        profile.IsAvailable = true;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Order status updated to {parsedStatus}",
+                status = parsedStatus.ToString()
+            });
+        }
+    }
+
+    public class UpdateOrderStatusDto2
+    {
+        public string Status { get; set; } = string.Empty;
     }
 }
