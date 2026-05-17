@@ -35,6 +35,14 @@ namespace Swadify_API.Entities
         public DateTime? EstimatedDeliveryTime { get; set; }
         public DateTime? ActualDeliveryTime { get; set; }
 
+        public DeliveryAssignmentStatus DeliveryAssignmentStatus { get; set; } = DeliveryAssignmentStatus.None;
+
+        public DateTime? DeliveryAssignedAt { get; set; }
+
+        public DateTime? DeliveryAcceptedAt { get; set; }
+
+        public DateTime? DeliveryRejectedAt { get; set; }
+
         // Razorpay
         public string? RazorpayOrderId { get; set; }
         public string? RazorpayPaymentId { get; set; }

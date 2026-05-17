@@ -88,24 +88,18 @@ namespace Swadify_API.Controllers.Admin
         }
 
         [HttpPatch("assign-delivery-partner/{orderId}")]
-        public async Task<IActionResult> AssignDeliveryPartner(int orderId, [FromBody] AssignDeliveryPartnerDto dto)
+        public async Task<IActionResult> AssignDeliveryPartner(
+    int orderId,
+    [FromBody] AssignDeliveryPartnerDto dto)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
             {
                 return NotFound(new
                 {
                     message = "Order not found"
-                });
-            }
-
-            // Already assigned
-            if (order.DeliveryPartnerId != null)
-            {
-                return BadRequest(new
-                {
-                    message = "Delivery partner already assigned"
                 });
             }
 
@@ -118,7 +112,20 @@ namespace Swadify_API.Controllers.Admin
                 });
             }
 
-            // Find delivery partner
+            // Prevent duplicate pending assignment
+            if (
+                order.DeliveryPartnerId != null &&
+                order.DeliveryAssignmentStatus ==
+                    DeliveryAssignmentStatus.Pending
+            )
+            {
+                return BadRequest(new
+                {
+                    message = "Delivery assignment already pending"
+                });
+            }
+
+            // Find DP
             var deliveryPartner = await _context.Users
                 .Include(x => x.DeliveryProfile)
                 .FirstOrDefaultAsync(x =>
@@ -141,7 +148,6 @@ namespace Swadify_API.Controllers.Admin
                 });
             }
 
-            // Check availability
             if (!deliveryPartner.DeliveryProfile.IsAvailable)
             {
                 return BadRequest(new
@@ -150,23 +156,22 @@ namespace Swadify_API.Controllers.Admin
                 });
             }
 
-            // Assign DP
+            // ONLY SEND REQUEST
             order.DeliveryPartnerId = dto.DeliveryPartnerId;
 
-            // Update order status
-            order.Status = OrderStatus.AssignedToDelivery;
+            order.DeliveryAssignmentStatus =
+                DeliveryAssignmentStatus.Pending;
 
-            // Make DP unavailable
-            deliveryPartner.DeliveryProfile.IsAvailable = false;
+            order.DeliveryAssignedAt = DateTime.UtcNow;
 
             order.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
-            // Notify delivery partner
+            // Notify DP
             await _notifications.SendNotificationAsync(
                 deliveryPartner.Id,
-                "New Delivery Assigned",
+                "New Delivery Request",
                 $"Order #{order.OrderNumber} has been assigned to you.",
                 NotificationType.General,
                 order.Id
@@ -174,10 +179,9 @@ namespace Swadify_API.Controllers.Admin
 
             return Ok(new
             {
-                message = "Delivery partner assigned successfully",
+                message = "Assignment request sent successfully",
                 orderId = order.Id,
-                deliveryPartnerId = deliveryPartner.Id,
-                status = order.Status.ToString()
+                deliveryPartnerId = deliveryPartner.Id
             });
         }
     }

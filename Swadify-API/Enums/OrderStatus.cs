@@ -14,4 +14,11 @@
         Cancelled = 8,
         Failed = 9
     }
+    public enum DeliveryAssignmentStatus
+    {
+        None = 1,
+        Pending = 2,
+        Accepted = 3,
+        Rejected = 4
+    }
 }

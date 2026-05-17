@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Swadify_API.Entities;
+using Swadify_API.Enums;
 
 namespace Swadify_API.Data
 {

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FirebaseAdmin.Messaging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swadify_API.Data;
 using Swadify_API.Entities;
+using Swadify_API.Enums;
+using Swadify_API.Interfaces;
 using System.Security.Claims;
 
 namespace Swadify_API.Controllers.DeliveryPartner
@@ -10,9 +13,10 @@ namespace Swadify_API.Controllers.DeliveryPartner
     [ApiController]
     [Route("api/delivery-partner")]
     [Authorize(Roles = "DeliveryPartner")]
-    public class DPDashboardController(AppDbContext context) : ControllerBase
+    public class DPDashboardController(AppDbContext context, INotificationService notifications) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+        private readonly INotificationService _notifications = notifications;
 
         [HttpGet("dashboard/active-deliveries")]
         public async Task<IActionResult> GetActiveDeliveries()
@@ -121,6 +125,7 @@ namespace Swadify_API.Controllers.DeliveryPartner
                     customerName = o.Customer != null ? $"{o.Customer.FirstName} {o.Customer.LastName}".Trim() : "",
                     orderNumber = o.OrderNumber,
                     status = o.Status.ToString(),
+                    DeliveryAssignmentStatus = o.DeliveryAssignmentStatus.ToString(),
                     paymentMethod = o.PaymentMethod.ToString(),
                     paymentStatus = o.PaymentStatus.ToString(),
                     subtotal = o.SubTotal,
@@ -204,20 +209,155 @@ namespace Swadify_API.Controllers.DeliveryPartner
         [HttpPatch("orders/accept-order/{orderId}")]
         public async Task<IActionResult> AcceptOrder(int orderId)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
             if (order == null)
             {
-                return NotFound(new { message = "Order not found" });
+                return NotFound(new
+                {
+                    message = "Order not found"
+                });
             }
-            if (order.DeliveryPartnerId != null)
+
+            var deliveryPartnerId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0"
+            );
+
+            // ─────────────────────────────────────────────
+            // ADMIN ASSIGNED FLOW
+            // ─────────────────────────────────────────────
+
+            if (
+                order.DeliveryPartnerId == deliveryPartnerId &&
+                order.DeliveryAssignmentStatus ==
+                    DeliveryAssignmentStatus.Pending
+            )
             {
-                return BadRequest(new { message = "Order already accepted by another delivery partner" });
+                order.DeliveryAssignmentStatus =
+                    DeliveryAssignmentStatus.Accepted;
+
+                order.Status = OrderStatus.AssignedToDelivery;
+
+                order.DeliveryAcceptedAt = DateTime.UtcNow;
+
+                var profile = await _context.DeliveryPartnerProfiles
+                    .FirstOrDefaultAsync(x => x.UserId == deliveryPartnerId);
+
+                if (profile != null)
+                {
+                    profile.IsAvailable = false;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Assigned order accepted successfully"
+                });
             }
-            var deliveryPartnerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-            order.DeliveryPartnerId = deliveryPartnerId;
-            order.Status = Enums.OrderStatus.AssignedToDelivery;
+
+            // ─────────────────────────────────────────────
+            // OPEN MARKETPLACE FLOW
+            // ─────────────────────────────────────────────
+
+            if (
+                order.DeliveryPartnerId == null &&
+                order.Status == OrderStatus.ReadyForPickup
+            )
+            {
+                order.DeliveryPartnerId = deliveryPartnerId;
+
+                order.Status = OrderStatus.AssignedToDelivery;
+
+                order.DeliveryAssignmentStatus =
+                    DeliveryAssignmentStatus.Accepted;
+
+                order.DeliveryAcceptedAt = DateTime.UtcNow;
+
+                var profile = await _context.DeliveryPartnerProfiles
+                    .FirstOrDefaultAsync(x => x.UserId == deliveryPartnerId);
+
+                if (profile != null)
+                {
+                    profile.IsAvailable = false;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Order accepted successfully"
+                });
+            }
+
+            return BadRequest(new
+            {
+                message = "Order cannot be accepted"
+            });
+        }
+
+        [HttpPatch("orders/reject-assignment/{orderId}")]
+        public async Task<IActionResult> RejectAssignment(int orderId)
+        {
+            var deliveryPartnerId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0"
+            );
+
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o =>
+                    o.Id == orderId &&
+                    o.DeliveryPartnerId == deliveryPartnerId);
+
+            if (order == null)
+            {
+                return NotFound(new
+                {
+                    message = "Order not found"
+                });
+            }
+
+            if (
+                order.DeliveryAssignmentStatus !=
+                DeliveryAssignmentStatus.Pending
+            )
+            {
+                return BadRequest(new
+                {
+                    message = "Assignment already processed"
+                });
+            }
+
+            order.DeliveryPartnerId = null;
+
+            order.DeliveryAssignmentStatus =
+                DeliveryAssignmentStatus.Rejected;
+
+            order.DeliveryRejectedAt = DateTime.UtcNow;
+
+            order.UpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Order accepted successfully" });
+
+            // Notify admin that assignment was rejected
+
+            var adminId = await _context.Restaurants
+                .Where(r => r.Id == order.RestaurantId)
+                .Select(r => r.OwnerId)
+                .FirstOrDefaultAsync();
+
+            await _notifications.SendNotificationAsync(
+                adminId,
+                "Delivery Assignment Rejected",
+                $"Delivery partner rejected Order #{order.OrderNumber}",
+                NotificationType.General,
+                order.Id
+            );
+
+            return Ok(new
+            {
+                message = "Assignment rejected successfully"
+            });
         }
 
         [HttpPatch("orders/update-status/{orderId}")]
