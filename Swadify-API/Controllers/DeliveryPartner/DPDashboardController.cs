@@ -176,6 +176,37 @@ namespace Swadify_API.Controllers.DeliveryPartner
             return Ok(assignedOrders);
         }
 
+        [HttpGet("earnings")]
+        public async Task<IActionResult> GetEarningsAsync([FromQuery] string period)
+        {
+            var deliveryPartnerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            DateTime fromDate = period.ToLower() switch
+            {
+                "today" => DateTime.UtcNow.Date,
+
+                "week" => DateTime.UtcNow.AddDays(-7),
+
+                "month" => DateTime.UtcNow.AddMonths(-1),
+
+                "year" => DateTime.UtcNow.AddYears(-1),
+
+                _ => DateTime.UtcNow.AddDays(-7)
+            };
+
+            var earnings = await _context.DeliveryPartnerEarnings
+                .Where(x =>
+                    x.DeliveryPartnerId == deliveryPartnerId &&
+                    x.EarnedAt >= fromDate)
+                .OrderByDescending(x => x.EarnedAt)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                success = true,
+                data = earnings
+            });
+        }
+
 
 
 

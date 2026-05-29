@@ -14,13 +14,15 @@ namespace Swadify_API.Services
         private readonly JwtHelper _jwt;
         private readonly IConfiguration _config;
         private readonly ILogger<AuthService> _logger;
+        private readonly INotificationService _notifications; // ✅ Add this
 
-        public AuthService(AppDbContext db, JwtHelper jwt, IConfiguration config, ILogger<AuthService> logger)
+        public AuthService(AppDbContext db, JwtHelper jwt, IConfiguration config, ILogger<AuthService> logger, INotificationService notifications) // ✅ Inject
         {
             _db = db;
             _jwt = jwt;
             _config = config;
             _logger = logger;
+            _notifications = notifications; // ✅ Store it
         }
 
         public async Task<AuthResponseDto> RegisterCustomerAsync(CustomerRegisterDto dto)
@@ -79,7 +81,8 @@ namespace Swadify_API.Services
                 Email = dto.Email.ToLower(),
                 PhoneNumber = dto.PhoneNumber,
                 PasswordHash = PasswordHelper.Hash(dto.Password),
-                Role = UserRole.DeliveryPartner
+                Role = UserRole.DeliveryPartner,
+                IsActive = false,
             };
 
             _db.Users.Add(user);
@@ -90,11 +93,28 @@ namespace Swadify_API.Services
                 UserId = user.Id,
                 VehicleType = dto.VehicleType,
                 VehicleNumber = dto.VehicleNumber,
-                LicenseNumber = dto.LicenseNumber
+                LicenseNumber = dto.LicenseNumber,
+                AadharNumber = dto.AadharNumber,
+                ApplicationStatus = ApplicationStatus.Pending
             };
 
             _db.DeliveryPartnerProfiles.Add(profile);
             await _db.SaveChangesAsync();
+
+            // ✅ Notify SuperAdmins of new DP application
+            try
+            {
+                await _notifications.SendToRoleAsync(
+                    UserRole.SuperAdmin,
+                    "New Delivery Partner Application",
+                    $"{user.FirstName} {user.LastName} ({user.Email}) has applied for delivery partnership with vehicle {dto.VehicleNumber}",
+                    NotificationType.General
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send DP application notification");
+            }
 
             _logger.LogInformation("New delivery partner registered: {Email}", user.Email);
             return BuildAuthResponse(user);

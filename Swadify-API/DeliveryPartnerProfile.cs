@@ -1,4 +1,5 @@
 ﻿using Swadify_API.Entities;
+using Swadify_API.Enums;
 
 namespace Swadify_API
 {
@@ -19,6 +20,9 @@ namespace Swadify_API
         public decimal TotalEarnings { get; set; } = 0;
         public decimal PendingEarnings { get; set; } = 0;
         public decimal WithdrawnEarnings { get; set; } = 0;
+        public ApplicationStatus ApplicationStatus { get; set; } = ApplicationStatus.Pending;
+        public string? AadharNumber { get; set; }  // Add this
+        public string? RejectionReason { get; set; }  // Add this
 
         // Navigation
         public User? User { get; set; }

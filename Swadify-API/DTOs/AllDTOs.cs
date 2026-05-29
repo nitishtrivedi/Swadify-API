@@ -46,6 +46,7 @@ namespace Swadify_API.DTOs
         [Required] public string VehicleType { get; set; } = string.Empty;
         [Required] public string VehicleNumber { get; set; } = string.Empty;
         public string? LicenseNumber { get; set; }
+        public string? AadharNumber { get; set; }
     }
 
     #endregion
@@ -632,5 +633,34 @@ namespace Swadify_API.DTOs
         public UserRole? Role { get; set; }
         public bool? IsActive { get; set; }
     }
-    
+
+    #region Delivery Partner Management DTOs
+    public class DeliveryPartnerApplicationDto
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string VehicleType { get; set; } = string.Empty;
+        public string VehicleNumber { get; set; } = string.Empty;
+        public string? LicenseNumber { get; set; }
+        public string? AadharNumber { get; set; }
+        public ApplicationStatus ApplicationStatus { get; set; }
+        public string? RejectionReason { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class ApproveDeliveryPartnerDto
+    {
+        // No additional fields needed - just approve the pending application
+    }
+
+    public class RejectDeliveryPartnerDto
+    {
+        [Required, MinLength(10)] public string RejectionReason { get; set; } = string.Empty;
+    }
+    #endregion
 }
